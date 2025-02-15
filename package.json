@@ -1,0 +1,33 @@
+{
+  "id": 4825562571950,
+  "name": "@indra.ai/deva.data",
+  "version": "0.0.0",
+  "author": "Quinn Michaels",
+  "license": "MIT",
+  "copyright": "2025",
+  "description": "The Data Deva manages data ensuring in the Deva.world ecosystem.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/indraai/deva.legal.git"
+  },
+  "keywords": [
+    "Data",
+    "Indra.ai",
+    "Deva.space",
+    "Deva.cloud",
+    "Deva.world"
+  ],
+  "bugs": {
+    "url": "https://github.com/indraai/deva.data/issues"
+  },
+  "homepage": "https://deva.space/devas/data",
+  "dependencies": {
+    "@indra.ai/deva": "^1.4.2",
+    "mongodb": "^6.13.0"
+  }
+}
