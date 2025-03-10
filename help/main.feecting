@@ -1,14 +1,10 @@
-::begin:center
-image: /public/devas/::agent_key::/main.png
-::end:center
-
 # ::agent_name::
 
-::profile::
+::agent_profile::
 
 ---
 
-talk:#docs view devas/main:security
+talk: #security file:public main:header
 
 ---
 
