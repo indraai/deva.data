@@ -652,7 +652,7 @@ const DATA = new Deva({
   onError(err, data, reject) {
     this.prompt(this.vars.messages.error);
     console.log(err);
-    return reject(err);
+    return reject ? reject(err) : false;
   },
 });
 export default DATA
