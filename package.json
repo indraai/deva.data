@@ -27,7 +27,7 @@
   },
   "homepage": "https://deva.space/devas/data",
   "dependencies": {
-    "@indra.ai/deva": "^1.4.14",
+    "@indra.ai/deva": "^1.4.16",
     "mongodb": "^6.13.0"
   },
   "data": {
