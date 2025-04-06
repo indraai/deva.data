@@ -307,17 +307,20 @@ const DATA = new Deva({
     describe: insert data into the data vault.
     ***************/
     insert(packet) {
-      this.context('insert', `data: ${packet.q.meta.params[1]}`);
+      this.context('insert', `collection:${packet.q.meta.params[1]}`);
+      this.action('method', `insert:${packet.q.meta.params[1]}`);
       return new Promise((resolve, reject) => {
         const {data, meta} = packet.q;
         const collection = meta.params[1];
         this.func.insert({collection,data}).then(ins => {
+          this.state('resolve', `insert:${collection}:${insinsertedId}`)
           return resolve({
             text: `id:${insinsertedId}`,
             html: `id:${insinsertedId}`,
             data: ins,
           });
         }).catch(err => {
+          this.state('reject', 'insert');
           return this.error(packet, err, reject);
         });
       });
