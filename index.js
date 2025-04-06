@@ -44,6 +44,7 @@ const DATA = new Deva({
   },
   listeners: {
     'data:history'(packet) {
+      this.context('history');
       // here we insert a history object into the database.
       this.func.insert({
         collection: 'history',
@@ -82,16 +83,16 @@ const DATA = new Deva({
     describe: the insert function that inserts into the specified collection.
     ***************/
     async insert(opts) {
-      this.action('func', `insert`);
+      this.action('func', `insert ${opts.collection}`);
       let result = false;
       try {
-        this.state('insert', opts.collection);
+        this.state('data', `insert ${opts.collection}`);
         await this.modules.client.connect(); // connect to the database client.
         const db = this.modules.client.db(this.vars.database);  // set the database to use
         result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
       } finally {
         await this.modules.client.close(); // close the connection when done
-        this.state('return', 'insert');
+        this.action('return', `insert ${opts.collection}`);
         return result; // return the result to the requestor.
       }
     },
@@ -491,6 +492,8 @@ const DATA = new Deva({
             ].join('\n');
           }).join('\n') : 'no memory';
           this.state('parse', `memory`);
+          console.log('packet memory feecting resolve', memory);
+
           return this.question(`${this.askChr}feecting parse ${text}`);
         }).then(feecting => {
           data.feecting = feecting.a.data;
