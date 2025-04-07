@@ -86,9 +86,10 @@ const DATA = new Deva({
       this.action('func', `insert ${opts.collection}`);
       let result = false;
       try {
-        this.state('data', `insert ${opts.collection}`);
+        this.state('insert', opts.collection);
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect(); // connect to the database client.
-        const db = this.modules.client.db(this.vars.database);  // set the database to use
+        const db = this.modules.client.db(database);  // set the database to use
         result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
       } finally {
         await this.modules.client.close(); // close the connection when done
@@ -107,8 +108,9 @@ const DATA = new Deva({
       let result = false;
       try {
         this.state('update', opts.collection);
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect(); // connect to the database client.
-        const db = this.modules.client.db(this.vars.database);  // set the database to use
+        const db = this.modules.client.db(database);  // set the database to use
         result = await db.collection(opts.collection).updateOne(
           { _id: new ObjectId(`${opts.id}`) },
           { $set: opts.data }
@@ -130,8 +132,9 @@ const DATA = new Deva({
       let result = false;
       const {collection,data} = obj;
       try {
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
-        const db = this.modules.client.db(this.vars.database);
+        const db = this.modules.client.db(database);
         result = await db.collection(collection).find(data).sort({created:1}).toArray();
       } finally {
         await this.modules.client.close();
@@ -147,11 +150,12 @@ const DATA = new Deva({
     async search(opts) {
       this.action('func', 'search');
       let result = false;
-      const {collection,limit} = this.vars.search;
       try {
         this.state('search', opts.text);
+        const {collection,limit} = this.vars.search;
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
-        const db = this.modules.client.db(this.vars.database);
+        const db = this.modules.client.db(database);
         const table = db.collection(collection);
 
         // await table.dropIndex('a.text_1');
@@ -188,8 +192,9 @@ const DATA = new Deva({
       const {collection,limit} = this.vars.memory;
       try {
         this.state('get', `memory`);
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
-        const db = this.modules.client.db(this.vars.database);
+        const db = this.modules.client.db(database);
         const table = db.collection(collection);
 
         // await table.dropIndex('a_text_q_text');
@@ -230,8 +235,9 @@ const DATA = new Deva({
 
       try {
         this.state('get', 'knowledge');
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
-        const db = this.modules.client.db(this.vars.database);
+        const db = this.modules.client.db(database);
         const table = db.collection(collection);
 
         // await table.dropIndex('a_text_q_text');
@@ -268,8 +274,9 @@ const DATA = new Deva({
       // get indexes
       try {
         this.state('get', `indexes`);
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
-        const db = this.modules.client.db(this.vars.database);
+        const db = this.modules.client.db(database);
         result = await db.collection(opts.collection).listIndexes().toArray();
       } finally {
         await this.modules.client.close();
@@ -289,8 +296,9 @@ const DATA = new Deva({
       const {collection,limit} = this.vars.history;
       try {
         this.state('get', `history`);
+        const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
-        const db = this.modules.client.db(this.vars.database);
+        const db = this.modules.client.db(database);
         result = await db.collection(collection).find({}).sort({created:-1}).limit(limit).toArray();
       } finally {
         await this.modules.client.close();
@@ -649,9 +657,8 @@ const DATA = new Deva({
     }
   },
   onReady(data, resolve) {
-    const {uri,database} = this.services().personal.mongo;
+    const {uri} = this.services().personal.mongo;
     this.modules.client = new MongoClient(uri);
-    this.vars.database = database;
     this.prompt(this.vars.messages.ready);
     return resolve(data);
   },
