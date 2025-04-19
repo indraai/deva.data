@@ -19,8 +19,13 @@ opts: taks in the id, collection, and data to update in the collection.
 3. opts.data is the data object to update in the colletion.
 
 ### List
-opts: The object to filter the collection for data 
+opts: The object to filter the collection for data sorted by created.
+1. opts.collection is the collection to list items from.
+2. opts.data is the filtering object which includes the limit.
 
+### Search 
+
+opts: 
 ::begin:hidden
 #color = {{profile.color}}
 #bgcolor = {{profile.bgcolor}}
