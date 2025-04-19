@@ -231,7 +231,7 @@ const DATA = new Deva({
     async knowledge(opts) {
       this.action('func', 'knowledge');
       let result = false;
-      const {collection,limit} = this.vars.knowledge;
+      const {collection,limit,index} = this.vars.knowledge;
 
       try {
         this.state('get', 'knowledge');
@@ -242,15 +242,15 @@ const DATA = new Deva({
 
         // await table.dropIndex('a_text_q_text');
         const idx = await table.listIndexes().toArray();
-        const hasIdx = idx.find(i => i.name === 'knowledge_text')
+        const hasIdx = idx.find(i => i.name === index)
         if (!hasIdx) {
-          const newIdx = await table.createIndex({"content": "text"}, {name: 'knowledge_text'});
+          const newIdx = await table.createIndex({"content": "text"}, {name: index});
         }
 
         const query  = {$text:{$search:opts.text}};
         const options  = {
           projection: {
-            id: 1,
+            _id: 1,
             content: 1,
             score: { $meta: "textScore" }
           }
@@ -334,98 +334,6 @@ const DATA = new Deva({
       });
     },
 
-    /**************
-    method: model
-    params: packet
-      params[1] is the agent
-      params[2] is the group
-      params[3] is the role
-      params[4] is the id (for edits)
-    describe: model method for building the data model.
-    ***************/
-    model(packet) {
-      this.context('model');
-      return new Promise((resolve, reject) => {
-        const {meta, text} = packet.q;
-        let func = 'insert', id = false;
-
-        if (meta.params[1]) this.vars.model.agent = meta.params[1];
-        if (meta.params[2]) this.vars.model.group = meta.params[2];
-        if (meta.params[3]) this.vars.model.role = meta.params[3];
-
-        const { collection } = this.vars.model;
-
-        const data = {
-          agent: this.vars.model.agent,
-          group: this.vars.model.group,
-          role: this.vars.model.role,
-          content: text,
-        };
-
-        if (meta.params[4]) {
-          id = meta.params[4];
-          func = 'update';
-          data.modified = Date.now();
-        }
-        else {
-          data.modified = null;
-          data.created = Date.now();
-        }
-
-        this.func[func]({id, collection,data}).then(ins => {
-          return resolve({
-            text: `id:${ins.insertedId || id}`,
-            html: `id:${ins.insertedId || id}`,
-            data: ins,
-          });
-        }).catch(err => {
-          return this.error(packet, err, reject);
-        });
-      });
-    },
-    /**************
-    method: modeler
-    params: packet
-      params[1] is the agent
-      params[2] is the group
-      params[3] is the role
-    describe: model method for building the data model.
-    ***************/
-    modeler(packet) {
-      this.context('modeler');
-      return new Promise((resolve, reject) => {
-        const {meta, text} = packet.q;
-        if (meta.params[1]) this.vars.modeler.agent = meta.params[1];
-        const { collection, agent } = this.vars.modeler;
-        const data = {agent};
-
-        this.func.list({collection,data}).then(list => {
-
-          const model = {};
-          const data = [];
-
-          // loop of the array object
-          for (const x of list) {
-            if (!model[x.group]) model[x.group] = [];
-            model[x.group].push({role: x.role, content: x.content});
-          }
-
-          // loop in the data object.
-          for (const x in model) {
-            data.push(JSON.stringify({messages: model[x]}));
-          }
-
-          // format for jsonl
-          return resolve({
-            text: `see data`,
-            html: `see data`,
-            data,
-          });
-        }).catch(err => {
-          return this.error(packet, err, reject);
-        });
-      });
-    },
 
     /**************
     method: history
@@ -538,15 +446,15 @@ const DATA = new Deva({
 
         this.func.knowledge(packet.q).then(wisdom => {
           data.wisdom = wisdom;
-          const text = wisdom ? wisdom.map(item => {
+          const text = wisdom.length ? wisdom.map(item => {
             return [
-              `::begin:knowledge:${item.id}`,
-              `law: ${item.content}`,
-              `created: ${this.formatDate(item.created, 'long', true)}`,
+              `::begin:knowledge:${item._id}`,
+              `p: ${item.content}`,
+              `created: ${this.lib.formatDate(item.created, 'long', true)}`,
               `score: ${item.score.toFixed(3)}`,
-              `::end:knowledge:${this.hash(item)}`,
+              `::end:knowledge:${this.lib.hash(item)}`,
             ].join('\n');
-          }).join('\n') : 'no knowledge';
+          }).join('\n') : this.vars.messages.no_knowledge;
           this.state('parse', `knowledge`);
           return this.question(`${this.askChr}feecting parse ${text}`);
         }).then(feecting => {
@@ -558,20 +466,20 @@ const DATA = new Deva({
             data,
           })
         }).catch(err => {
-          this.state('reject', `knowledge`)
+          this.state('reject', `knowledge`);
           return this.error(err, packet, reject);
         });
       });
     },
 
     /**************
-    method: mem
+    method: know
     params: packet
     describe: add data to the knowledge base
     example: #data mem:[id] [content to store in memory]
     ***************/
-    add(packet) {
-      this.context('add', `text: ${packet.q.meta.params[1]}`);
+    know(packet) {
+      this.context('know', `text: ${packet.q.meta.params[1]}`);
 
       return new Promise((resolve, reject) => {
         if (!packet.q.text) return resolve(this._messages.notext);
@@ -629,32 +537,6 @@ const DATA = new Deva({
         })
       });
     },
-    
-    extract(packet) {
-      return new Promise((resolve, reject) => {
-        try {
-          const theFile = this.lib.fs.readFileSync(`./private/data/extract/conversations.json`);
-          const theJSON = JSON.parse(theFile);
-          const theConvo = [];
-          theJSON.forEach((itm,idx) => {
-            const getToday = this.lib.getToday(itm.create_time * 1000);
-              const writeFile = `./private/data/conversations/${getToday}.json`
-              const writeData = JSON.stringify(itm, false, 2);
-              this.lib.fs.writeFileSync(writeFile, writeData);
-              this.prompt(`extract file:${writeFile}`);
-            // console.log('item', itm);
-          });
-          return resolve({
-            text: Object.keys(theJSON),
-            html: false,
-            data: Object.keys(theJSON),
-          });
-        } 
-        catch (err) {
-          return this.error(err, packet, reject);
-        }
-      });
-    }
   },
   onReady(data, resolve) {
     const {uri} = this.services().personal.mongo;
