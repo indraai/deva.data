@@ -34,12 +34,13 @@ const DATA = new Deva({
     parse(input) {return input.trim();},
     process(input) {return input.trim();},
     memory(input) {
-      return input.replace(/\n/g, ' ')
-                  .replace(/(\b)or have specific questions about it(\b)/g, '$2')
-                  .replace(/(\b), feel free to ask(\b)/g, '$2')
-                  .replace(/\sIf you have .+ free share!/g, '')
-                  .replace(/\sIf there are .+ free share!/g, '')
-                  .replace(/\s{2,}/g, ' ');
+      input = input.replace(/\n/g, ' ')
+                .replace(/(\b)or have specific questions about it(\b)/g, '$2')
+                .replace(/(\b), feel free to ask(\b)/g, '$2')
+                .replace(/\sIf you have .+ free share!/g, '')
+                .replace(/\sIf there are .+ free share!/g, '')
+                .replace(/\s{2,}/g, ' ');
+      return input;
     }
   },
   listeners: {
@@ -52,23 +53,18 @@ const DATA = new Deva({
       });
     },
     async 'data:memory'(packet) {
-      const datamem = await this.func.insert({
+      const data = {
+        id: packet.id,
+        client: packet.client.id,
+        agent: packet.agent.id,
+        q: this.utils.memory(packet.q),
+        a: this.utils.memory(packet.a),
+        created: Date.now(),
+      }
+      data.hash = this.lib.hash(data);
+      await this.func.insert({
         collection: `memory_${packet.agent.key}`,
-        data: {
-          id: packet.id,
-          client: {
-            id: packet.client.id,
-            name: packet.client.profile.name,
-          },
-          agent: {
-            id: packet.agent.id,
-            key: packet.agent.key,
-            name: packet.agent.profile.name,
-          },
-          q: this.utils.memory(packet.q),
-          a: this.utils.memory(packet.a),
-          created: Date.now(),
-        }
+        data,
       });
     }
   },
@@ -83,7 +79,7 @@ const DATA = new Deva({
     describe: the insert function that inserts into the specified collection.
     ***************/
     async insert(opts) {
-      this.action('func', `insert ${opts.collection}`);
+      this.action('func', `insert:${opts.collection}:${opts.id}`);
       let result = false;
       try {
         this.state('insert', opts.collection);
@@ -93,7 +89,7 @@ const DATA = new Deva({
         result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
       } finally {
         await this.modules.client.close(); // close the connection when done
-        this.action('return', `insert ${opts.collection}`);
+        this.action('return', `insert:${opts.collection}:${opts.id}`);
         return result; // return the result to the requestor.
       }
     },
@@ -127,10 +123,10 @@ const DATA = new Deva({
     params: obj - the find object
     describe: return a find from the database collection.
     ***************/
-    async list(obj={}) {
+    async list(opts={}) {
       this.action('func', 'list');
       let result = false;
-      const {collection,data} = obj;
+      const {collection,data} = opts;
       try {
         const {database} = this.services().personal.mongo;
         await this.modules.client.connect();
@@ -166,7 +162,7 @@ const DATA = new Deva({
 
         const query  = {$text:{$search:opts.text}};
         const projection  = {
-          _id:0,
+          _id: 0,
           a: {
             id: 1,
             text: 1
@@ -479,16 +475,19 @@ const DATA = new Deva({
     example: #data mem:[id] [content to store in memory]
     ***************/
     know(packet) {
-      this.context('know', `text: ${packet.q.meta.params[1]}`);
+      this.context('know', packet.id);
 
       return new Promise((resolve, reject) => {
         if (!packet.q.text) return resolve(this._messages.notext);
-        this.vars.knowledge.content = packet.q.text; // store text in local
 
         const {meta, text} = packet.q;
-        let func = 'insert', id = false;
-        const {collection, content} = this.vars.knowledge;
-        const data = {content};
+        const {collection} = this.vars.knowledge;
+        const data = {
+          id: packet.id,
+          content: packet.q.text,
+        };
+        let id = false,
+            func = 'insert';
 
         // if param[1] id is found then update record
         if (meta.params[1]) {
@@ -506,7 +505,7 @@ const DATA = new Deva({
           return resolve({
             text: `id: ${ins.insertedId || id}`,
             html: `id: ${ins.insertedId || id}`,
-            data: ins,
+            data: ins.insertedId,
           });
         }).catch(err => {
           this.state('reject', 'add');

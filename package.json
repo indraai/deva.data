@@ -123,13 +123,13 @@
       "knowledge": {
         "collection": "knowledge",
         "limit": 3,
-        "content": false,
         "index": "knowledge_text"
       },
       "memory": {
         "collection": "memory",
         "limit": 3,
-        "content": false
+        "content": false,
+        "index": "a_q_text"
       },
       "archive": {
         "collection": "archive",
