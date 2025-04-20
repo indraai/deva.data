@@ -192,15 +192,13 @@ const DATA = new Deva({
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         const table = db.collection(collection);
-
         // await table.dropIndex('a_text_q_text');
         const idx = await table.listIndexes().toArray();
-        const hasIdx = idx.find(i => i.name === 'a_q_text')
+        const hasIdx = idx.find(i => i.name === 'a_q_text');
         if (!hasIdx) {
           const newIdx = await table.createIndex({"a": "text", "q": "text"}, {name: 'a_q_text'});
         }
-
-        const query  = {$text:{$search:opts.text}};
+        const query = {$text:{$search:opts.text}};
         const options = {
             projection: {
             id: 1,
@@ -210,7 +208,6 @@ const DATA = new Deva({
             created: 1
           }
         };
-        // db.memory_buddy.find({$text:{$search:"hello"}}, {id: 1,a: 1,q: 1,score:{$meta:"textScore"}}).limit(10)
         result = await table.find(query, options).limit(parseInt(limit)).toArray();
       } finally {
         await this.modules.client.close();
