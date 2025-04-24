@@ -1,3 +1,4 @@
+::BEGIN:MAIN
 # {{profile.name}}
 
 {{profile}}
@@ -7,28 +8,33 @@
 ## Func
 
 ### Insert 
+
 opts: takes in the id, collection, and data for the insert 
+
 1. opts.id is the id for the packet
 2. opts.collection is the collection that the opts.data will insert
 3. opts.data is the object that holds the data structure to insert.
 
 ### Update
-opts: taks in the id, collection, and data to update in the collection.
+
+opts: takes in the id, collection, and data to update in the collection.
+
 1. opts.id is the id of the item to update.
 2. opts.collection is the collection to update.
 3. opts.data is the data object to update in the colletion.
 
 ### List
+
 opts: The object to filter the collection for data sorted by created.
+
 1. opts.collection is the collection to list items from.
 2. opts.data is the filtering object which includes the limit.
 
-### Search 
 
-opts: 
 ::begin:hidden
 #color = {{profile.color}}
 #bgcolor = {{profile.bgcolor}}
 #bg = {{profile.background}}
-::end:hidden
 copyright: ©2025 Quinn Michaels
+::end:hidden
+::END:MAIN
