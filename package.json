@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/indraai/deva.data",
   "dependencies": {
-    "@indra.ai/deva": "^1.5.35",
+    "@indra.ai/deva": "^1.5.36",
     "mongodb": "^6.13.0"
   },
   "data": {
@@ -51,11 +51,12 @@
         }
       },
       "profile": {
-        "name": "#DataDeva",
+        "name": "Data Deva",
+        "hashtag": "#DataDeva",
         "title": "Data Deva",
-        "subtitle": "Managing data in Deva.world.",
-        "describe": "Data Deva manages the data in Deva.world. Responsibilities include managing, inserting, updating, searching, and retriving data from the Deva.world systems.",
-        "tweet": "Data Deva manages the inserting, updating, searching, and retriving data from the Deva.world systems.",
+        "subtitle": "A companion in managing and exploring data.",
+        "describe": "Managing inserting and updating to searching and retrieving data with efficiency.",
+        "tweet": "Data Deva manages the inserting, updating, searching, and retriving data.",
         "hashtags": "QuinnMichaels,IndraAI,DevaWorld,DataDeva",
         "pronouns": "He, Him",
         "gender": "DEVA",
