@@ -27,7 +27,7 @@
   },
   "homepage": "https://github.com/indraai/deva.data",
   "dependencies": {
-    "@indra.ai/deva": "^1.5.45",
+    "@indra.ai/deva": "^1.5.46",
     "mongodb": "^6.13.0"
   },
   "data": {
