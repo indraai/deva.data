@@ -44,6 +44,12 @@ const DATA = new Deva({
     }
   },
   listeners: {
+    'devacore:question'(packet) {
+      const echo = this.methods.echo(agent.key, 'q', packet);
+    },
+    'devacore:answer'(packet) {
+      const echo = this.methods.echo(agent.key, 'a', packet);
+    },
     'data:history'(packet) {
       this.context('history');
       // here we insert a history object into the database.

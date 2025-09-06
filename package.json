@@ -1,10 +1,24 @@
 {
-  "id": 4825562571950,
+  "id": 50724628955442156083,
   "name": "@indra.ai/deva.data",
   "version": "0.0.41",
-  "author": "Quinn Michaels",
-  "license": "MIT",
-  "copyright": "2025",
+  "license": "VLA LICENSE.md",
+  "author": {
+    "name": "Quinn A Michaels",
+    "email": "quinn@indra.ai",
+    "url": "https://indra.ai/"
+  },
+  "funding": [
+    {
+      "type": "paypal",
+      "url": "https://paypal.me/rahulaclub"
+    },
+    {
+      "type": "patreon",
+      "url": "https://patreon.com/rahulaclub"
+    }
+  ],
+  "copyright": "(c)2025 Quinn Michaels; All rights reserved.",
   "description": "The Data Deva manages data ensuring in the Deva.world ecosystem.",
   "main": "index.js",
   "type": "module",
@@ -25,14 +39,14 @@
   "bugs": {
     "url": "https://github.com/indraai/deva.data/issues"
   },
-  "homepage": "https://github.com/indraai/deva.data",
+  "homepage": "https://indra.ai",
   "dependencies": {
     "@indra.ai/deva": "^1.5.56",
     "mongodb": "^6.13.0"
   },
   "data": {
     "agent": {
-      "id": 4825562571950,
+      "id": 22173104427159161906,
       "key": "data",
       "prompt": {
         "emoji": "💾",
@@ -72,7 +86,8 @@
         "background": "/assets/devas/data/background.png",
         "owner": "Quinn Michaels",
         "creator": "Quinn Michaels",
-        "created": "Sunday, September 17, 2023 - 5:02:05 PM"
+        "created": "Sunday, September 17, 2023 - 5:02:05 PM",
+        "modified": " Saturday, September 6, 2025 - 9:18:59 AM"
       }
     },
     "vars": {
