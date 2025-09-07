@@ -18,7 +18,7 @@
       "url": "https://patreon.com/rahulaclub"
     }
   ],
-  "copyright": "(c)2025 Quinn Michaels; All rights reserved.",
+  "copyright": "(c)Copyright 2025, Quinn A Michaels; All Rights Reserved.",
   "description": "The Data Deva manages data ensuring in the Deva.world ecosystem.",
   "main": "index.js",
   "type": "module",
@@ -41,7 +41,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.5.56",
+    "@indra.ai/deva": "^1.6.2",
     "mongodb": "^6.13.0"
   },
   "data": {
