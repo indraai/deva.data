@@ -41,7 +41,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.6.63",
+    "@indra.ai/deva": "^1.6.64",
     "mongodb": "^6.13.0"
   },
   "data": {
@@ -95,7 +95,7 @@
         "init": "🟠 INIT",
         "start": "🔵 START",
         "enter": "🟢 ENTER",
-        "ready": "🏞️ Ready for Data Stream",
+        "ready": "🏞️ Ready for Data Nexus.",
         "stop": "🔴 STOP",
         "exit": "🟡 EXIT",
         "done": "🟣 DONE",
