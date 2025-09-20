@@ -65,7 +65,7 @@
       "key": "data",
       "prompt": {
         "emoji": "💾",
-        "text": "Data",
+        "text": "#data",
         "colors": {
           "label": {
             "R": 0,
