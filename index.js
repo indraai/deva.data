@@ -49,14 +49,8 @@ const DATA = new Deva({
     }
   },
   listeners: {
-    'devacore:question'(packet) {
-      this.methods.echo(agent.key, 'q', packet);
-    },
-    'devacore:answer'(packet) {
-      this.methods.echo(agent.key, 'a', packet);
-    },
-    'data:history'(packet) {
-      this.context('history');
+    async 'data:history'(packet) {
+      this.context('history', `${packet.a.agent.key}:${packet.id.uid}`);
       // here we insert a history object into the database.
       this.func.insert({
         collection: 'history',
@@ -72,7 +66,7 @@ const DATA = new Deva({
         a: this.utils.memory(packet.a),
         created: Date.now(),
       }
-      data.hash = this.lib.hash(data);
+      data.hash = this.hash(data);
       await this.func.insert({
         collection: `memory_${packet.agent.key}`,
         data,
@@ -90,17 +84,20 @@ const DATA = new Deva({
     describe: the insert function that inserts into the specified collection.
     ***************/
     async insert(opts) {
-      this.action('func', `insert:${opts.collection}:${opts.id}`);
+      this.action('func', `insert:${opts.collection}:${opts.data.id.uid}`);
       let result = false;
       try {
-        this.state('insert', opts.collection);
-        const {database} = this.services().personal.mongo;
+        this.state('insert', `${opts.collection}:${opts.data.id.uid}`);
+        const {database} = this.data().personal.mongo;
+
+        this.state('connect', `${opts.collection}:${opts.data.id.uid}`);
         await this.modules.client.connect(); // connect to the database client.
         const db = this.modules.client.db(database);  // set the database to use
+        
         result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
       } finally {
         await this.modules.client.close(); // close the connection when done
-        this.action('return', `insert:${opts.collection}:${opts.id}`);
+        this.action('return', `insert:${opts.collection}:${opts.data.id.uid}`);
         return result; // return the result to the requestor.
       }
     },
@@ -115,7 +112,7 @@ const DATA = new Deva({
       let result = false;
       try {
         this.state('update', opts.collection);
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect(); // connect to the database client.
         const db = this.modules.client.db(database);  // set the database to use
         result = await db.collection(opts.collection).updateOne(
@@ -139,7 +136,7 @@ const DATA = new Deva({
       let result = false;
       const {collection,data} = opts;
       try {
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         result = await db.collection(collection).find(data).sort({created:1}).toArray();
@@ -160,7 +157,7 @@ const DATA = new Deva({
       try {
         this.state('search', opts.text);
         const {collection,limit} = this.vars.search;
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         const table = db.collection(collection);
@@ -199,7 +196,7 @@ const DATA = new Deva({
       const {collection,limit} = this.vars.memory;
       try {
         this.state('get', `memory`);
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         const table = db.collection(collection);
@@ -239,7 +236,7 @@ const DATA = new Deva({
 
       try {
         this.state('get', 'knowledge');
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         const table = db.collection(collection);
@@ -278,7 +275,7 @@ const DATA = new Deva({
       // get indexes
       try {
         this.state('get', `indexes`);
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         result = await db.collection(opts.collection).listIndexes().toArray();
@@ -300,7 +297,7 @@ const DATA = new Deva({
       const {collection,limit} = this.vars.history;
       try {
         this.state('get', `history`);
-        const {database} = this.services().personal.mongo;
+        const {database} = this.data().personal.mongo;
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         result = await db.collection(collection).find({}).sort({created:-1}).limit(limit).toArray();
@@ -319,20 +316,20 @@ const DATA = new Deva({
     describe: insert data into the data vault.
     ***************/
     insert(packet) {
-      this.context('insert', `collection:${packet.q.meta.params[1]}`);
-      this.action('method', `insert:${packet.q.meta.params[1]}`);
+      this.context('insert', `${packet.q.meta.params[1]}:${packet.id.uid}`);
+      this.action('method', `insert:${packet.q.meta.params[1]}:${packet.id.uid}`);
       return new Promise((resolve, reject) => {
         const {data, meta} = packet.q;
         const collection = meta.params[1];
         this.func.insert({collection,data}).then(ins => {
-          this.state('resolve', `insert:${collection}:${insinsertedId}`)
+          this.action('resolve', `insert:${collection}:${insinsertedId}`)
           return resolve({
             text: `id:${insinsertedId}`,
             html: `id:${insinsertedId}`,
             data: ins,
           });
         }).catch(err => {
-          this.state('reject', 'insert');
+          this.action('reject', 'insert');
           return this.error(packet, err, reject);
         });
       });
@@ -345,7 +342,7 @@ const DATA = new Deva({
     describe: get history
     ***************/
     history(packet) {
-      this.context('history');
+      this.context('history', packet.id.uid);
       return new Promise((resolve, reject) => {
         this.func.history().then(history => {
           return resolve({
