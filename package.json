@@ -46,10 +46,13 @@
   },
   "keywords": [
     "Data",
+    "Data Deva",
     "Indra.ai",
     "Deva.space",
     "Deva.cloud",
-    "Deva.world"
+    "Deva.world",
+    "Quinn A Michaels",
+    "Inside The Net, Inc."
   ],
   "bugs": {
     "url": "https://github.com/indraai/deva.data/issues"
@@ -61,7 +64,7 @@
   },
   "data": {
     "agent": {
-      "id": 22173104427159163000,
+      "id": "22173104427159163000",
       "key": "data",
       "prompt": {
         "emoji": "💾",
@@ -80,6 +83,7 @@
         }
       },
       "profile": {
+        "id": "52528210770061700271",
         "name": "Data Deva",
         "hashtag": "#Data",
         "title": "Data Deva",
