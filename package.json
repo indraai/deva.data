@@ -59,7 +59,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.10.0",
+    "@indra.ai/deva": "^1.11.0",
     "mongodb": "^6.13.0"
   },
   "data": {
@@ -99,10 +99,10 @@
         "layout": "default",
         "color": "rgb(192,209,226)",
         "bgcolor": "rgb(0,12,24)",
-        "emoji": "/assets/devas/data/emoji.png",
-        "avatar": "/assets/devas/data/avatar.png",
-        "image": "/assets/devas/data/image.png",
-        "background": "/assets/devas/data/background.png",
+        "emoji": "/devas/data/emoji.png",
+        "avatar": "/devas/data/avatar.png",
+        "image": "/devas/data/image.png",
+        "background": "/devas/data/background.png",
         "owner": "Quinn Michaels",
         "creator": "Quinn Michaels",
         "copyright": "©2025 Quinn A Michaels; All rights reserved.",

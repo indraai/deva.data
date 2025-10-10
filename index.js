@@ -54,7 +54,7 @@ const DATA = new Deva({
       // here we insert a history object into the database.
       this.func.insert({
         collection: 'history',
-        data: packet,
+        data: this.lib.copy(packet),
       });
     },
     async 'data:memory'(packet) {
