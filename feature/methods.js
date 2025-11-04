@@ -10,7 +10,17 @@ export default {
   describe: The global wall feature that installs with every agent
   ***************/
   async data(packet) {
-    const data = await this.methods.sign('data', 'default', packet);
-    return data;
+    const info = this.info();
+    console.log('INFO', info);
+    const {id, q} = packet;
+    const {meta, text, data, agent, client} = q;
+    this.prompt(`DATABASE: ${info.id}-${agent.profile.name.replace(/\s/g, '')}`);
+    this.prompt(`ID: ${id.uid}`);
+    this.prompt(`VLA: ${info.VLA.uid}`);
+    this.prompt('META');
+    this.prompt(JSON.stringify(meta, null, 2));
+    this.prompt('TEXT');
+    this.prompt(text);
+    return true;
   },
 };
