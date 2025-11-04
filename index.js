@@ -91,7 +91,7 @@ const DATA = new Deva({
         this.state('insert', `${opts.collection}:${opts.data.id.uid}`);
         this.state('connect', `${opts.collection}:${opts.data.id.uid}`);
         await this.modules.client.connect(); // connect to the database client.
-        const db = this.modules.client.db(this.vars.database);  // set the database to use
+        const db = this.modules.client.db(opts.database);  // set the database to use
         
         result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
       } finally {
@@ -320,11 +320,12 @@ const DATA = new Deva({
       return new Promise((resolve, reject) => {
         const {data, meta} = packet.q;
         const collection = meta.params[1];
-        this.func.insert({collection,data}).then(ins => {
-          this.action('resolve', `insert:${collection}:${insinsertedId}`)
+        const database = meta.params[2] || this.vars.database;
+        this.func.insert({database, collection,data}).then(ins => {
+          this.action('resolve', `insert:${collection}:${ins.insertedId}`)
           return resolve({
-            text: `id:${insinsertedId}`,
-            html: `id:${insinsertedId}`,
+            text: `id:${ins.insertedId}`,
+            html: `id:${ins.insertedId}`,
             data: ins,
           });
         }).catch(err => {
