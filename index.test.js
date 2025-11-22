@@ -1,21 +1,21 @@
 "use strict";
-// Copyright ©2025 Quinn A Michaels; All rights reserved. 
+// Copyright ©2000-2025 Quinn A Michaels; All rights reserved. 
 // Legal Signature Required For Lawful Use.
-// Distributed under VLA:65859204002504361305 LICENSE.md
+// Distributed under VLA:54611712212611489719 LICENSE.md
 
 const {expect} = require('chai')
-const LegalDeva = require('./index.js');
+const DataDeva = require('./index.js');
 
-describe(LegalDeva.me.name, () => {
+describe(DataDeva.me.name, () => {
   beforeEach(() => {
-    return LegalDeva.init()
+    return DataDeva.init()
   });
   it('Check the DEVA Object', () => {
-    expect(LegalDeva).to.be.an('object');
-    expect(LegalDeva).to.have.property('agent');
-    expect(LegalDeva).to.have.property('vars');
-    expect(LegalDeva).to.have.property('listeners');
-    expect(LegalDeva).to.have.property('methods');
-    expect(LegalDeva).to.have.property('modules');
+    expect(DataDeva).to.be.an('object');
+    expect(DataDeva).to.have.property('agent');
+    expect(DataDeva).to.have.property('vars');
+    expect(DataDeva).to.have.property('listeners');
+    expect(DataDeva).to.have.property('methods');
+    expect(DataDeva).to.have.property('modules');
   });
 })
