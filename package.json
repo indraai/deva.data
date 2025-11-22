@@ -58,7 +58,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.27.1",
+    "@indra.ai/deva": "^1.28.0",
     "mongodb": "^6.13.0"
   },
   "data": {
