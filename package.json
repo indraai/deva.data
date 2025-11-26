@@ -1,18 +1,16 @@
 {
-  "id": "54611712212611489719",
+  "id": "48254448594192127787",
   "name": "@indra.ai/deva.data",
   "version": "0.10.1",
-  "license": "VLA:54611712212611489719 LICENSE.md",
+  "license": "VLA:48254448594192127787 LICENSE.md",
   "VLA": {
-    "uid": "54611712212611489719",
-    "time": 1763767804353,
-    "date": "Friday, November 21, 2025 - 3:30:04 PM",
-    "fingerprint": "jzVQ8MonD+e+BheGsFyej1lYhT7lNPbwWw+ZWC1Neqw=",
+    "uid": "48254448594192127787",
+    "time": 1763843529082,
+    "date": "Saturday, November 22, 2025 - 12:32:09 PM",
     "warning": "⚠️ Unlawful use or duplication of this uid constitutes Vedic Sâhasa a crime of the highest degree. A fine amounting to a thousand Panas (1 pana = 3.5 grams of gold) for each instance is ordained, and confiscation of the entire property of the offenders is forfeit to Quinn A Michaels is declared to be the punishment for Sâhasa of the highest degree.",
-    "copyright": "Copyright ©2000-2025 Quinn A Michaels; All rights reserved.",
-    "md5": "JZQKkjJEszFEe29VUz15SA==",
-    "sha256": "qUSdY2EIzo7DGjZL1IDIHP45FMPOicnwapQdYwlMYzU=",
-    "sha512": "9imMBeMu3vgPHR8H53g2CYfhioigIkRPiuSRnROmqo4BoRe7KpIOSgl2GOxPNUBbD5pVtfjHPYxB0SJ4jzW6pg=="
+    "license": "46220923248993739422",
+    "fingerprint": "zSHjdj+OyM2eG0mwHpAdp3Yiybjv0bpIO7PFCCgTJ5k=",
+    "copyright": "Copyright ©2000-2025 Quinn A Michaels; All rights reserved."
   },
   "author": {
     "name": "Quinn A Michaels",
@@ -84,7 +82,7 @@
       "profile": {
         "id": "52528210770061700271",
         "name": "Data Deva",
-        "hashtag": "#Data",
+        "hashtag": "#DataDeva",
         "title": "Data Deva",
         "subtitle": "A companion in managing and exploring data.",
         "describe": "Managing inserting and updating to searching and retrieving data with efficiency.",
