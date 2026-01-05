@@ -1,9 +1,9 @@
 "use strict";
 // Data Deva
-// Copyright ©2000-2025 Quinn A Michaels; All rights reserved. 
+// Copyright ©2000-2026 Quinn A Michaels; All rights reserved. 
 // Legal Signature Required For Lawful Use.
-// Distributed under VLA:48254448594192127787 LICENSE.md
-// Saturday, November 22, 2025 - 12:32:09 PM
+// Distributed under VLA:56832904524996289116 LICENSE.md
+// Sunday, January 4, 2026 - 4:11:40 PM
 
 // Data Deva
 import Deva from '@indra.ai/deva';
@@ -32,7 +32,7 @@ const info = {
   copyright: pkg.copyright
 };
 
-const DATA = new Deva({
+const DataDeva = new Deva({
   info,
   agent,
   vars,
@@ -565,4 +565,4 @@ const DATA = new Deva({
     return reject ? reject(err) : false;
   },
 });
-export default DATA
+export default DataDeva
