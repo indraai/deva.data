@@ -59,7 +59,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.33.0",
+    "@indra.ai/deva": "^1.35.0",
     "mongodb": "^6.13.0"
   },
   "data": {
@@ -107,7 +107,7 @@
         "creator": "Quinn A Michaels",
         "copyright": "Copyright ©2000-2026 Quinn A Michaels; All rights reserved.",
         "created": "Sunday, September 17, 2023 - 5:02:05 PM",
-        "updated": "Sunday, January 4, 2026 - 4:11:40 PM"
+        "updated": "2026-02-14T00:34:53.751Z"
       }
     },
     "vars": {
