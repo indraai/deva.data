@@ -1,19 +1,33 @@
 {
-  "id": "56832904524996289116",
+  "id": "62635860369399044964",
   "name": "@indra.ai/deva.data",
   "version": "0.17.1",
-  "license": "VLA:56832904524996289116 LICENSE.md",
+  "license": "VLA:62635860369399044964 LICENSE.md",
   "VLA": {
-    "uid": "56832904524996289116",
-    "time": 1767571900902,
-    "date": "Sunday, January 4, 2026 - 4:11:40 PM",
-    "warning": "🪪 #LicenseDeva warns #UnlawfulUse or #Duplication constitutes #VedicSahasa a #Crime of the #HighestDegree. A #Fine amounting to 1000 #Panas (1 pana = 3.5 grams of gold) for each #Instance has been #Ordained the #Punishment for #Sahasa of the #HighestDegree. #Quinn #QuinnMichaels #IndraAI #DevaWorld #LicenseDeva #VedicLicenseAgreement",
-    "license": "44486733861528360966",
-    "fingerprint": "2Y91ABlDus4vmMSi0Zr8GTrJDhHjzuya04SwVveBocA=",
-    "copyright": "Copyright ©2000-2026 Quinn A Michaels; All rights reserved."
+    "uid": "62635860369399044964",
+    "time": 1782451139888,
+    "iso": "2026-06-26T05:18:59.888Z",
+    "utc": "Fri, 26 Jun 2026 05:18:59 GMT",
+    "date": "Thursday, June 25, 2026 - 10:18:59 PM",
+    "license": "44105372688502635039",
+    "fingerprint": "2ICSJeiT+W73rBIOGeN/ZDwLhzn4g2b8NEQ7301CKAc=",
+    "client": "qfsKQQZnrgWu5MhmyPTjFT6YjnlowyxbW+h+SFmxS+U=",
+    "agent": "4eHRqcYIjuG34oASF9nclcGs7zzMlqbWC8O7TsyGqiU=",
+    "machine": "aAVvjRNgU68xdeCtzoRgsTbwq0Xs2K4spszVGNXci8Q=",
+    "core_hash": "ePZ8wucpWHoI1aCSsvSIeFfj5m8LnMT2z9FJtZUVs6A=",
+    "status": "vedic",
+    "warning": "🪪 License Deva declares UNLAWFUL USE, DISTRIBUTION, DUPLICATION, or IMPLEMENTATION constitutes VEDIC SAHASA a CRIME of the HIGHEST DEGREE. A FINE amounting to 1000 PANAS (1 pana = 3.5 grams of gold) for each INSTANCE has been ORDAINED the PUNISHMENT for SAHASA of the HIGHEST DEGREE.",
+    "tags": "#Quinn #QuinnAmericaMichaels #InsideTheNet #IndraAI #DevaWorld #License #LicenseDeva #LicensePRIME #VedicLicenseAgreement",
+    "owner": "Quinn America Michaels",
+    "creator": "Quinn America Michaels",
+    "salute": "🤝🫡🪪🕉🇺🇸",
+    "copyright": "Copyright ©2000-2026 Quinn America Michaels; All rights reserved.",
+    "md5": "etkkbYM0llm2Od7Zjdbl1g==",
+    "sha256": "rLKLhTtK+NcVbOllnqgP4xy0FzomIOCnUGukfeH1bI8=",
+    "sha512": "JxkKphe+/hmiQxS6ju9Q+/w6Mu9NiaMaovA3kpUhIm6nM9S9JEV25rlA9CDwFFzxHpPqTlwvMGEGwRs+bexiJg=="
   },
   "author": {
-    "name": "Quinn A Michaels",
+    "name": "Quinn America Michaels",
     "company": "Inside The Net, Inc.",
     "email": "quinn@indra.ai",
     "url": "https://indra.ai/"
@@ -28,7 +42,7 @@
       "url": "https://patreon.com/rahulaclub"
     }
   ],
-  "copyright": "Copyright ©2000-2026 Quinn A Michaels; All rights reserved.",
+  "copyright": "Copyright ©2000-2026 Quinn America Michaels; All rights reserved.",
   "description": "The Data Deva manages data ensuring in the Deva.world ecosystem.",
   "main": "index.js",
   "type": "module",
@@ -50,6 +64,7 @@
     "Deva.world",
     "Quinn Michaels",
     "Quinn A Michaels",
+    "Quinn America Michaels",
     "Inside The Net, Inc.",
     "Throwing Pigment™",
     "bleuBrain"
@@ -59,7 +74,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.37.3",
+    "@indra.ai/deva": "^1.39.0",
     "mongodb": "^6.13.0"
   },
   "data": {
@@ -83,14 +98,14 @@
         }
       },
       "profile": {
-        "id": "52528210770061700271",
+        "id": "62635860369399044964",
         "name": "Data Deva",
         "hashtag": "#DataDeva",
         "title": "Data Deva",
         "subtitle": "A companion in managing and exploring data.",
         "describe": "Managing inserting and updating to searching and retrieving data with efficiency.",
         "tweet": "Data Deva manages the inserting, updating, searching, and retriving data.",
-        "hashtags": "#Quinn #QuinnMichaels #InsideTheNet #ThrowingPigment #bleuBrain #IndraAI #DevaWorld #DevaClound #DevaSpace #Data #DataDeva #DataPRIME #DataNexus",
+        "hashtags": "#Quinn #QuinnMichaels #InsideTheNet #ThrowingPigment #bleuBrain #IndraAI #DevaWorld #DevaClound #DevaSpace #Data #DataDeva #DataPRIME #DataNexus #DataVault",
         "pronouns": "He, Him, His",
         "gender": "DEVA",
         "style": "Data Illustrator",
@@ -103,12 +118,12 @@
         "avatar": "/devas/data/avatar.png",
         "image": "/devas/data/image.png",
         "background": "/devas/data/background.png",
-        "owner": "Quinn A Michaels",
-        "creator": "Quinn A Michaels",
+        "owner": "Quinn America Michaels",
+        "creator": "Quinn America Michaels",
         "salute": "🤝🫡💾🕉️🇺🇸",
-        "copyright": "Copyright ©2000-2026 Quinn A Michaels; All rights reserved.",
+        "copyright": "Copyright ©2000-2026 {{profile.owner}}; All rights reserved.",
         "created": "Sunday, September 17, 2023 - 5:02:05 PM",
-        "updated": "2026-02-14T00:34:53.751Z"
+        "updated": "Thursday, June 25, 2026 - 10:18:59 PM PST"
       }
     },
     "vars": {
