@@ -74,7 +74,7 @@
   },
   "homepage": "https://indra.ai",
   "dependencies": {
-    "@indra.ai/deva": "^1.39.0",
+    "@indra.ai/deva": "^1.40.12",
     "mongodb": "^6.13.0"
   },
   "data": {
@@ -105,7 +105,7 @@
         "subtitle": "A companion in managing and exploring data.",
         "describe": "Managing inserting and updating to searching and retrieving data with efficiency.",
         "tweet": "Data Deva manages the inserting, updating, searching, and retriving data.",
-        "hashtags": "#Quinn #QuinnMichaels #InsideTheNet #ThrowingPigment #bleuBrain #IndraAI #DevaWorld #DevaClound #DevaSpace #Data #DataDeva #DataPRIME #DataNexus #DataVault",
+        "vectors": "#Quinn #QuinnMichaels #InsideTheNet #ThrowingPigment #bleuBrain #IndraAI #DevaWorld #DevaClound #DevaSpace #Data #DataDeva #DataPRIME #DataNexus #DataVault",
         "pronouns": "He, Him, His",
         "gender": "DEVA",
         "style": "Data Illustrator",
@@ -123,7 +123,7 @@
         "salute": "🤝🫡💾🕉️🇺🇸",
         "copyright": "Copyright ©2000-2026 {{profile.owner}}; All rights reserved.",
         "created": "Sunday, September 17, 2023 - 5:02:05 PM",
-        "updated": "Thursday, June 25, 2026 - 10:18:59 PM PST"
+        "updated": "TSaturday, June 27, 2026 - 7:12:39 PM PST"
       }
     },
     "vars": {
