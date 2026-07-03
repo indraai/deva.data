@@ -1,6 +1,6 @@
 "use strict";
 // Data Deva Feature Methods
-// Copyright ©2000-2026 Quinn A Michaels; All rights reserved. 
+// Copyright ©2000-2026 Quinn Arjuna Michaels; All rights reserved. 
 // Owner Signature Required For Lawful Use.
 // Distributed under VLA:62635860369399044964 LICENSE.md
 // Fri, 26 Jun 2026 05:18:59 GMT PST
