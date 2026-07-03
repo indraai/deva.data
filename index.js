@@ -5,7 +5,6 @@
 // Distributed under VLA:43299597378016753864 LICENSE.md
 // Friday, July 3, 2026 - 3:04:02 PM PST
 
-// Data Deva
 import Deva from '@indra.ai/deva';
 import { MongoClient, ObjectId } from 'mongodb';
 
