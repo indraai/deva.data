@@ -9,7 +9,7 @@
 
 ::begin:profile
 emoji: {{prompt.emoji}}
-hashtags: {{profile.hashtags}}
+vectors: {{profile.vectors}}
 describe: {{profile.describe}}
 creator: {{profile.creator}}
 copyright: {{profile.copyright}}
