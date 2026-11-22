@@ -5,8 +5,10 @@
 // Distributed under VLA:25377341401711892723 LICENSE.md
 // Saturday, November 21, 2026 - 7:42:26 PM PST
 
+import { ObjectId } from 'mongodb';
+
 export const func = {
-			/**************
+	/**************
 	func: insert
 	params: opts
 	describe: the insert function that inserts into the specified collection.

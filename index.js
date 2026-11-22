@@ -6,7 +6,7 @@
 // Saturday, November 21, 2026 - 7:42:26 PM PST
 
 import Deva from '@indra.ai/deva';
-import { MongoClient, ObjectId } from 'mongodb';
+import { MongoClient } from 'mongodb';
 
 import pkg from './package.json' with {type:'json'};
 const {agent, vars} = pkg.data;
