@@ -52,26 +52,35 @@ const DataDeva = new Deva({
   listeners: {
     async 'data:history'(packet) {
       this.context('history', `${packet.a.agent.key}:${packet.id.uid}`);
-      // here we insert a history object into the database.
-      this.func.insert({
-        collection: 'history',
-        data: this.lib.copy(packet),
-      });
+      try {
+        await this.func.insert({
+          collection: 'history',
+          data: this.lib.copy(packet),
+        });
+      } catch (err) {
+        return this.err(err, packet, false).catch(() => {});
+      }
     },
     async 'data:memory'(packet) {
-      const data = {
-        id: packet.id,
-        client: packet.client.id,
-        agent: packet.agent.id,
-        q: this.utils.memory(packet.q),
-        a: this.utils.memory(packet.a),
-        created: Date.now(),
+      try {
+        const data = {
+          id: packet.id,
+          client: packet.client.id,
+          agent: packet.agent.id,
+          q: this.utils.memory(packet.q),
+          a: this.utils.memory(packet.a),
+          created: Date.now(),
+        }
+        data.hash = this.hash(data);
+        await this.func.insert({
+          collection: `memory_${packet.agent.key}`,
+          data,
+        });
+        
+      } 
+      catch (err) {
+        return this.err(err, packet, false).catch(() => {});        
       }
-      data.hash = this.hash(data);
-      await this.func.insert({
-        collection: `memory_${packet.agent.key}`,
-        data,
-      });
     }
   },
   modules: {
@@ -95,15 +104,15 @@ const DataDeva = new Deva({
         const db = this.modules.client.db(opts.database);  // set the database to use
         
         result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
-      } finally {
-        await this.modules.client.close(); // close the connection when done
         this.action('return', `insert:${opts.collection}:${opts.data.id.uid}`);
         this.state('valid', `insert:${opts.collection}:${opts.data.id.uid}`);
         this.intent('good', `insert:${opts.collection}:${opts.data.id.uid}`);
         this.belief('vedic', `uid:${opts.data.id.uid}`);
         return result; // return the result to the requestor.
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
-    },
+  },
 
     /**************
     func: update
@@ -331,7 +340,7 @@ const DataDeva = new Deva({
           });
         }).catch(err => {
           this.action('reject', 'insert');
-          return this.error(packet, err, reject);
+          return this.err(err, packet, reject);
         });
       });
     },
@@ -352,7 +361,7 @@ const DataDeva = new Deva({
             data: history,
           })
         }).catch(err => {
-          return this.error(packet, err, reject);
+          return this.err(err, packet, reject);
         });
       });
     },
@@ -379,7 +388,7 @@ const DataDeva = new Deva({
             data: search,
           })
         }).catch(err => {
-          return this.error(packet, err, reject);
+          return this.err(err, packet, reject);
         });
       });
     },
@@ -407,7 +416,7 @@ const DataDeva = new Deva({
               `::begin:memory:${mem.id}`,
               `question: ${mem.q}`,
               `answer: ${mem.a}`,
-              `date: ${this.formatDate(mem.created, 'long', true)}`,
+              `date: ${this.lib.formatDate(mem.created, 'long', true)}`,
               `score: ${mem.score.toFixed(3)}`,
               `::end:memory:${this.hash(mem)}`,
             ].join('\n');
@@ -426,7 +435,7 @@ const DataDeva = new Deva({
           })
         }).catch(err => {
           this.state('reject', `memory`)
-          return this.error(packet, err, reject);
+          return this.err(err, packet, reject);
         });
       });
     },
@@ -454,7 +463,7 @@ const DataDeva = new Deva({
               `p: ${item.content}`,
               `created: ${this.lib.formatDate(item.created, 'long', true)}`,
               `score: ${item.score.toFixed(3)}`,
-              `::end:knowledge:${this.lib.hash(item)}`,
+              `::end:knowledge:${${item._id}}`,
             ].join('\n');
           }).join('\n') : this.vars.messages.no_knowledge;
           this.state('parse', `knowledge`);
@@ -469,7 +478,7 @@ const DataDeva = new Deva({
           })
         }).catch(err => {
           this.state('reject', `knowledge`);
-          return this.error(err, packet, reject);
+          return this.err(err, packet, reject);
         });
       });
     },
@@ -481,7 +490,7 @@ const DataDeva = new Deva({
     example: #data mem:[id] [content to store in memory]
     ***************/
     know(packet) {
-      this.context('know', packet.id);
+      this.context('know', packet.id.uid);
 
       return new Promise((resolve, reject) => {
         if (!packet.q.text) return resolve(this._messages.notext);
@@ -515,7 +524,7 @@ const DataDeva = new Deva({
           });
         }).catch(err => {
           this.state('reject', 'add');
-          return this.error(err, packet, reject);
+          return this.err(err, packet, reject);
         });
       });
     },
@@ -530,16 +539,17 @@ const DataDeva = new Deva({
       this.context('index', packet.q.text);
       this.action('method', 'index');
       return new Promise((resolve, reject) => {
-        this.func.indexes(packet.q).then(idx => {
+        const collection = packet.q.meta.params[1] || packet.q.text;
+        this.func.indexes({collection}).then(idx => {
           this.state('resolve', 'indexes');
           return resolve({
             text: 'indexes',
             html: 'indexes',
             data: idx
           })
-        }).reject(err => {
-          return this.error(err, packet, reject);
-        })
+        }).catch(err => {
+          return this.err(err, packet, reject);
+        });
       });
     },
   },

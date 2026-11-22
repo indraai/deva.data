@@ -218,8 +218,11 @@
         "memory": "💭 Memory",
         "loadArchive": "🛸 Load Archive",
         "mem": "🧠️ Update knowledge",
+        "know": "🔎 Knowledge",
         "knowledge": "🔎 Search knowledge",
-        "archive": "🗃️ Archive"
+        "archive": "🗃️ Archive",
+        "search": "🔎 Search",
+        "index": "📇 Indexes"
       }
     }
   }
