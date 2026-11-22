@@ -184,7 +184,7 @@ Start a local MongoDB, then run:
 node --test
 ```
 
-Once the package.json `test` script is set to `node --test`, `npm test` runs the same file. The tests use `mongodb://127.0.0.1:27017` by default. To use another server, set `MONGO_URI`:
+The package.json `test` script is `node --test`, so `npm test` runs the same file.
 
 ```bash
 MONGO_URI="mongodb://127.0.0.1:27018" node --test
