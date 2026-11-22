@@ -1,9 +1,9 @@
 "use strict";
 // Data Deva
-// Copyright ©2000-2026 Quinn Arjuna Michaels; All rights reserved. 
+// Copyright ©2000-2026 Quinn Michaels; All rights reserved. 
 // Owner Signature Required For Lawful Use.
-// Distributed under VLA:20572095239045559387 LICENSE.md
-// Friday, July 3, 2026 - 8:41:30 PM PST
+// Distributed under VLA:25377341401711892723 LICENSE.md
+// Saturday, November 21, 2026 - 7:42:26 PM PST
 
 import Deva from '@indra.ai/deva';
 import { MongoClient, ObjectId } from 'mongodb';
@@ -543,25 +543,23 @@ const DataDeva = new Deva({
       });
     },
   },
-  onInit(data, resolve) {
-    const {personal} = this.license(); // get the license config
-    const agent_license = this.info().VLA; // get agent license
-    const license_check = this.license_check(personal, agent_license); // check license
-    // return this.start if license_check passes otherwise stop.
-    return license_check ? this.start(data, resolve) : this.stop(data, resolve);
-  }, 
   onReady(data, resolve) {
     const {VLA} = this.info();
-    const {mongo} = this.data().global;
-    this.vars.database = mongo.database;
-    this.modules.client = new MongoClient(mongo.uri);
+    const {uri,database} = this.data().global?.mongo || {};
+    if (uri) this.modules.client = new MongoClient(uri); // build the client if uri is set
+    this.vars.database = database;
     this.prompt(`${this.vars.messages.ready} > VLA:${VLA.uid}`);
     return resolve(data);
+  },
+  onStop(data, resolve) {
+    const {client} = this.modules;
+    if (!client) return this.close(data, resolve);
+    return client.close().then(() => this.close(data, resolve)); // close the database before shutdown
   },
   onError(err, data, reject) {
     this.prompt(this.vars.messages.error);
     console.log(err);
-    return reject ? reject(err) : false;
-  },
+    return reject ? reject(err) : Promise.reject(err);
+  }
 });
 export default DataDeva
