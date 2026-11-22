@@ -358,9 +358,9 @@ const DataDeva = new Deva({
     },
 
     /**************
-    method: history
+    method: search
     params: packet
-    describe: get history
+    describe: search data
     ***************/
     search(packet) {
       this.context('search', packet.q.text);
