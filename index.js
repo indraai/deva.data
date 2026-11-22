@@ -73,7 +73,7 @@ const DataDeva = new Deva({
         }
         data.hash = this.hash(data);
         await this.func.insert({
-          collection: `memory_${packet.agent.key}`,
+          collection: this.vars.memory.collection,
           data,
         });
         
@@ -130,10 +130,10 @@ const DataDeva = new Deva({
           { _id: new ObjectId(`${opts.id}`) },
           { $set: opts.data }
         ); // insert the data
-      } finally {
-        await this.modules.client.close(); // close the connection when done
         this.state('return', 'update');
         return result; // return the result to the requestor.
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
     },
 
@@ -150,9 +150,9 @@ const DataDeva = new Deva({
         await this.modules.client.connect();
         const db = this.modules.client.db(this.vars.database);
         result = await db.collection(collection).find(data).sort({created:1}).toArray();
-      } finally {
-        await this.modules.client.close();
         return result;
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
     },
 
@@ -175,7 +175,6 @@ const DataDeva = new Deva({
         // const newIndex = await table.createIndex({"a.text": "text"});
         const idx = await table.listIndexes().toArray();
         // Print the list of indexes
-        // console.log("Existing indexes:\n", idx);
 
         const query  = {$text:{$search:opts.text}};
         const projection  = {
@@ -187,10 +186,10 @@ const DataDeva = new Deva({
           score: { $meta: "textScore" }
         };
         result = await table.find(query).project(projection).limit(limit).toArray();
-      } finally {
-        await this.modules.client.close();
         this.state('return', 'search');
         return result;
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
     },
 
@@ -226,10 +225,10 @@ const DataDeva = new Deva({
           }
         };
         result = await table.find(query, options).limit(parseInt(limit)).toArray();
-      } finally {
-        await this.modules.client.close();
         this.state('return', `memory`);
         return result;
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done        
       }
     },
 
@@ -266,10 +265,10 @@ const DataDeva = new Deva({
           }
         };
         result = await table.find(query,options).limit(parseInt(limit)).toArray();
-      } finally {
-        await this.modules.client.close();
         this.state('return', `knowledge`);
         return result;
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
     },
 
@@ -288,10 +287,10 @@ const DataDeva = new Deva({
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         result = await db.collection(opts.collection).listIndexes().toArray();
-      } finally {
-        await this.modules.client.close();
         this.state('return', 'indexes');
         return result;
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
     },
 
@@ -310,10 +309,10 @@ const DataDeva = new Deva({
         await this.modules.client.connect();
         const db = this.modules.client.db(database);
         result = await db.collection(collection).find({}).sort({created:-1}).limit(limit).toArray();
-      } finally {
-        await this.modules.client.close();
         this.state('return', `history`);
         return result;
+      } finally {
+        if (this.modules.client) await this.modules.client.close(); // close the connection when done
       }
     },
 
@@ -422,7 +421,6 @@ const DataDeva = new Deva({
             ].join('\n');
           }).join('\n') : 'no memory';
           this.state('parse', `memory`);
-          console.log('packet memory feecting resolve', memory);
 
           return this.question(`${this.askChr}feecting parse ${text}`);
         }).then(feecting => {
@@ -463,7 +461,7 @@ const DataDeva = new Deva({
               `p: ${item.content}`,
               `created: ${this.lib.formatDate(item.created, 'long', true)}`,
               `score: ${item.score.toFixed(3)}`,
-              `::end:knowledge:${${item._id}}`,
+              `::end:knowledge:${item._id}}`,
             ].join('\n');
           }).join('\n') : this.vars.messages.no_knowledge;
           this.state('parse', `knowledge`);
