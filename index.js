@@ -71,12 +71,13 @@ const DataDeva = new Deva({
 					a: this.utils.memory(packet.a),
 					created: Date.now(),
 				}
-				data.hash = this.hash(data);
-				await this.func.insert({
-					collection: this.vars.memory.collection,
-					data,
-				});
+				const data_stamped = this._stamp(data, 'data:memory', data.id.uid)
 				
+				await this.func.insert({
+					database: this.data().personal.mongo.database,
+					collection: this.vars.memory.collection,
+					data: data_stamped,
+				});				
 			} 
 			catch (err) {
 				return this.err(err, packet, false).catch(() => {});        
@@ -244,7 +245,7 @@ const DataDeva = new Deva({
 
 			try {
 				this.state('get', 'knowledge');
-				const {database} = this.data().personal.mongo;
+				const database = this.vars.database;
 				await this.modules.client.connect();
 				const db = this.modules.client.db(database);
 				const table = db.collection(collection);
@@ -273,7 +274,7 @@ const DataDeva = new Deva({
 		},
 
 		/**************
-		func: index
+		func: indexes
 		params: opts
 		describe: Creates an index on a collection in the database.
 		***************/
@@ -513,7 +514,7 @@ const DataDeva = new Deva({
 					data.created = Date.now();
 				}
 
-				this.func[func]({id,collection,data}).then(ins => {
+				this.func[func]({id,collection,data, database: this.vars.database}).then(ins => {
 					this.state('resolve', 'add');
 					return resolve({
 						text: `id: ${ins.insertedId || id}`,
