@@ -78,11 +78,6 @@ export const func = {
 		const db = this.modules.client.db(this.vars.database);
 		const table = db.collection(collection);
 
-		// await table.dropIndex('a.text_1');
-		// const newIndex = await table.createIndex({"a.text": "text"});
-		const idx = await table.listIndexes().toArray();
-		// Print the list of indexes
-
 		const query  = {$text:{$search:opts.text}};
 		const projection  = {
 			_id: 0,
@@ -111,12 +106,9 @@ export const func = {
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
 		const table = db.collection(collection);
-		// await table.dropIndex('a_text_q_text');
-		const idx = await table.listIndexes().toArray();
-		const hasIdx = idx.find(i => i.name === 'a_q_text');
-		if (!hasIdx) {
-			const newIdx = await table.createIndex({"a": "text", "q": "text"}, {name: 'a_q_text'});
-		}
+
+		await table.createIndex({"a": "text", "q": "text"}, {name: 'a_q_text'});
+		
 		const query = {$text:{$search:opts.text}};
 		const options = {
 				projection: {
@@ -148,13 +140,8 @@ export const func = {
 		const db = this.modules.client.db(database);
 		const table = db.collection(collection);
 
-		// await table.dropIndex('a_text_q_text');
-		const idx = await table.listIndexes().toArray();
-		const hasIdx = idx.find(i => i.name === index)
-		if (!hasIdx) {
-			const newIdx = await table.createIndex({"content": "text"}, {name: index});
-		}
-
+		await table.createIndex({"content": "text"}, {name: index});
+		
 		const query  = {$text:{$search:opts.text}};
 		const options  = {
 			projection: {
