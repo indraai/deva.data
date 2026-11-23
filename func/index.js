@@ -103,6 +103,7 @@ export const func = {
 				id: 1,
 				text: 1
 			},
+			created: 1,
 			score: { $meta: "textScore" }
 		};
 		
@@ -150,8 +151,8 @@ export const func = {
 				id: 1,
 				a: 1,
 				q: 1,
+				created: 1,
 				score: { $meta: "textScore" },
-				created: 1
 			}
 		};
 		
@@ -198,6 +199,7 @@ export const func = {
 			projection: {
 				_id: 1,
 				content: 1,
+				created: 1, 
 				score: { $meta: "textScore" }
 			}
 		};
