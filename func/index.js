@@ -87,7 +87,7 @@ export const func = {
 			},
 			score: { $meta: "textScore" }
 		};
-		result = await table.find(query).project(projection).limit(limit).toArray();
+		result = await table.find(query).project(projection).limit(parseInt(limit)).toArray();
 		this.state('return', 'search');
 		return result;
 	},
@@ -186,7 +186,7 @@ export const func = {
 		const {database} = this.data().personal.mongo;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
-		result = await db.collection(collection).find({}).sort({created:-1}).limit(limit).toArray();
+		result = await db.collection(collection).find({}).sort({created:-1}).limit(parseInt(limit)).toArray();
 		this.state('return', `history`);
 		return result;
 	},
