@@ -87,8 +87,19 @@ export const func = {
 			},
 			score: { $meta: "textScore" }
 		};
-		result = await table.find(query).project(projection).limit(parseInt(limit)).toArray();
-		this.state('return', 'search');
+		
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `search:limit:${limit}`);
+			this.state('invalid', `search:limit:${limit}`);
+			this.intent('bad', `search:limit:${limit}`);
+			return [];
+		}
+
+		result = await table.find(query).project(projection).limit(parsed).toArray();
+		this.action('return', `knowledge`);
+		this.state('valid', `knowledge`);
+		this.intent('good', `knowledge`)
 		return result;
 	},
 	
@@ -119,8 +130,19 @@ export const func = {
 				created: 1
 			}
 		};
-		result = await table.find(query, options).limit(parseInt(limit)).toArray();
-		this.state('return', `memory`);
+		
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `memory:limit:${limit}`);
+			this.state('invalid', `memory:limit:${limit}`);
+			this.intent('bad', `memory:limit:${limit}`);
+			return [];
+		}
+		
+		result = await table.find(query, options).limit(parsed).toArray();
+		this.action('return', `memory`);
+		this.state('valid', `memory`);
+		this.intent('good', `memory`)
 		return result;
 	},
 	
@@ -150,8 +172,19 @@ export const func = {
 				score: { $meta: "textScore" }
 			}
 		};
-		result = await table.find(query,options).limit(parseInt(limit)).toArray();
-		this.state('return', `knowledge`);
+		
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `knowledge:limit:${limit}`);
+			this.state('invalid', `knowledge:limit:${limit}`);
+			this.intent('bad', `knowledge:limit::${limit}`);
+			return [];
+		}
+		
+		result = await table.find(query,options).limit(parsed).toArray();
+		this.action('return', `knowledge`);
+		this.state('valid', `knowledge`);
+		this.intent('good', `knowledge`)
 		return result;
 	},
 	
@@ -169,7 +202,10 @@ export const func = {
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
 		result = await db.collection(opts.collection).listIndexes().toArray();
-		this.state('return', 'indexes');
+		
+		this.action('return', `history`);
+		this.state('valid', `history`);
+		this.intent('good', `history`)
 		return result;
 	},
 	
@@ -186,8 +222,19 @@ export const func = {
 		const {database} = this.data().personal.mongo;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
-		result = await db.collection(collection).find({}).sort({created:-1}).limit(parseInt(limit)).toArray();
-		this.state('return', `history`);
+		
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `history:limit::${limit}`);
+			this.state('invalid', `history:limit::${limit}`);
+			this.intent('bad', `history:limit::${limit}`);
+			return [];
+		}
+
+		result = await db.collection(collection).find({}).sort({created:-1}).limit(parsed).toArray();
+		this.action('return', `history`);
+		this.state('valid', `history`);
+		this.intent('good', `history`)
 		return result;
 	},
 }

@@ -98,7 +98,7 @@ export const methods = {
 	
 			this.func.memory(packet.q).then(memory => {
 				data.memory = memory;
-				const text = memory ? memory.map(mem => {
+				const text = memory.length ? memory.map(mem => {
 					return [
 						`::begin:memory:${mem.id.uid}`,
 						`question: ${mem.q}`,
@@ -108,8 +108,8 @@ export const methods = {
 						`::end:memory:${mem.id.uid}`,
 					].join('\n');
 				}).join('\n') : 'no memory';
+				
 				this.state('parse', `memory`);
-	
 				return this.question(`${this.askChr}feecting parse ${text}`);
 			}).then(feecting => {
 				data.feecting = feecting.a.data;
