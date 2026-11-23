@@ -176,7 +176,7 @@ All of these use the one `MongoClient` from `global.mongo.uri`. Each function ca
 
 The `func` and `methods` objects live in their own directories so `index.js` stays the Deva wiring: listeners, utils, lifecycle, and the imports from `./func/index.js` and `./methods/index.js`. Deva Core binds those functions to the Deva `this`.
 
-The `vars` in `package.json` hold the prompt `messages`, the default `search`, `memory`, `knowledge` and `history` `collection names`, `limits`, and the `default limit` each one resets to., and the command `context` labels. `this.vars.database` is set in `onReady` from `global.mongo.database`.
+The `vars` in `package.json` hold the prompt `messages`, the default `search`, `memory`, `knowledge` and `history` `collection names`, `limits`, and the `default limit` each one resets to, and the command `context` labels. `this.vars.database` is set in `onReady` from `global.mongo.database`.
 
 ## Testing
 
