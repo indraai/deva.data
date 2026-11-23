@@ -109,7 +109,7 @@ export const methods = {
 					].join('\n');
 				}).join('\n') : 'no memory';
 				
-				this.action('parse', `memory:${packaet.id.uid}`);
+				this.action('parse', `memory:${packet.id.uid}`);
 				return this.question(`${this.askChr}feecting parse ${text}`);
 			}).then(feecting => {
 				data.feecting = feecting.a.data;
