@@ -72,7 +72,9 @@ export const func = {
 	async search(opts) {
 		this.action('func', 'search');
 		let result = false;
-		this.state('search', opts.text);
+		
+		this.state('get', 'search');
+		const {collection,limit} = this.vars.search;
 
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
@@ -82,7 +84,6 @@ export const func = {
 			return [];
 		}
 
-		const {collection,limit} = this.vars.search;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(this.vars.database);
 		const table = db.collection(collection);
@@ -112,8 +113,9 @@ export const func = {
 	async memory(opts) {
 		this.action('func', 'memory');
 		let result = false;
-		const {collection,limit} = this.vars.memory;
+
 		this.state('get', `memory`);
+		const {collection,limit} = this.vars.memory;
 
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
@@ -156,9 +158,9 @@ export const func = {
 	async knowledge(opts) {
 		this.action('func', 'knowledge');
 		let result = false;
-		const {collection,limit,index} = this.vars.knowledge;
 
 		this.state('get', 'knowledge');
+		const {collection,limit,index} = this.vars.knowledge;
 		
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
@@ -220,10 +222,11 @@ export const func = {
 	async history() {
 		this.action('func', 'history');
 		let result = false;
-		const {collection,limit} = this.vars.history;
-		this.state('get', `history`);
-		const parsed = parseInt(limit, 10);
 
+		this.state('get', `history`);
+		const {collection,limit} = this.vars.history;
+
+		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
 			this.action('incorrect', `history:limit:${limit}`);
 			this.state('invalid', `history:limit:${limit}`);
