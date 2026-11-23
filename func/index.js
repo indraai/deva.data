@@ -88,6 +88,9 @@ export const func = {
 			this.intent('bad', `search:limit:${limit}`);
 			return [];
 		}
+		else {
+			this.vars.search.limit = parsed;
+		}
 
 		await this.modules.client.connect();
 		const db = this.modules.client.db(this.vars.database);
@@ -129,6 +132,9 @@ export const func = {
 			this.state('invalid', `memory:limit:${limit}`);
 			this.intent('bad', `memory:limit:${limit}`);
 			return [];
+		}
+		else {
+			this.vars.memory.limit = parsed;
 		}
 		
 		const {database} = this.data().personal.mongo;
@@ -175,6 +181,9 @@ export const func = {
 			this.state('invalid', `knowledge:limit:${limit}`);
 			this.intent('bad', `knowledge:limit:${limit}`);
 			return [];
+		}
+		else {
+			this.vars.knowledge.limit = parsed;
 		}
 		
 		const database = this.vars.database;
@@ -240,6 +249,9 @@ export const func = {
 			this.state('invalid', `history:limit:${limit}`);
 			this.intent('bad', `history:limit:${limit}`);
 			return [];
+		}
+		else {
+			this.vars.history.limit = parsed;
 		}
 
 		const {database} = this.data().personal.mongo;
