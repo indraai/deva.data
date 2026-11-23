@@ -17,16 +17,16 @@ export const func = {
 		this.belief('data', `uid:${opts.data.id.uid}`);
 		this.action('func', `insert:${opts.collection}:${opts.data.id.uid}`);
 		let result = false;
-		this.state('insert', `${opts.collection}:${opts.data.id.uid}`);
 		this.state('connect', `${opts.collection}:${opts.data.id.uid}`);
 		await this.modules.client.connect(); // connect to the database client.
 		const db = this.modules.client.db(opts.database);  // set the database to use
 		
+		this.action('insert', `${opts.collection}:${opts.data.id.uid}`);
 		result = await db.collection(opts.collection).insertOne(opts.data); // insert the data
+
 		this.action('return', `insert:${opts.collection}:${opts.data.id.uid}`);
 		this.state('valid', `insert:${opts.collection}:${opts.data.id.uid}`);
 		this.intent('good', `insert:${opts.collection}:${opts.data.id.uid}`);
-		this.belief('vedic', `uid:${opts.data.id.uid}`);
 		return result; // return the result to the requestor.
 	},
 	
@@ -36,16 +36,20 @@ export const func = {
 	describe: the update function that update into the specified collection.
 	***************/
 	async update(opts) {
-		this.action('func', 'update');
+		this.action('func', `update:${opts.collection}:${opts.id}`);
 		let result = false;
-		this.state('update', opts.collection);
 		await this.modules.client.connect(); // connect to the database client.
 		const db = this.modules.client.db(this.vars.database);  // set the database to use
+
+		this.action('update', `update:${opts.collection}:${opts.id}`);
 		result = await db.collection(opts.collection).updateOne(
 			{ _id: new ObjectId(`${opts.id}`) },
 			{ $set: opts.data }
 		); // insert the data
-		this.state('return', 'update');
+		
+		this.action('return', `update:${opts.collection}:${opts.id}`);
+		this.state('valid', `update:${opts.collection}:${opts.id}`);
+		this.intent('good', `update:${opts.collection}:${opts.id}`);
 		return result; // return the result to the requestor.
 	},
 	
@@ -78,6 +82,7 @@ export const func = {
 
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
+			this.vars.search.limit = this.vars.search.default;
 			this.action('incorrect', `search:limit:${limit}`);
 			this.state('invalid', `search:limit:${limit}`);
 			this.intent('bad', `search:limit:${limit}`);
@@ -119,6 +124,7 @@ export const func = {
 
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
+			this.vars.memory.limit = this.vars.memory.default;
 			this.action('incorrect', `memory:limit:${limit}`);
 			this.state('invalid', `memory:limit:${limit}`);
 			this.intent('bad', `memory:limit:${limit}`);
@@ -164,6 +170,7 @@ export const func = {
 		
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
+			this.vars.knowledge.limit = this.vars.knowledge.default;
 			this.action('incorrect', `knowledge:limit:${limit}`);
 			this.state('invalid', `knowledge:limit:${limit}`);
 			this.intent('bad', `knowledge:limit:${limit}`);
@@ -228,6 +235,7 @@ export const func = {
 
 		const parsed = parseInt(limit, 10);
 		if (parsed !== Number(limit) || parsed < 1) {
+			this.vars.history.limit = this.vars.history.default;
 			this.action('incorrect', `history:limit:${limit}`);
 			this.state('invalid', `history:limit:${limit}`);
 			this.intent('bad', `history:limit:${limit}`);

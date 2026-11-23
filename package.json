@@ -168,30 +168,36 @@
       },
       "history": {
         "collection": "history",
-        "limit": 25
+        "limit": 25,
+        "default": 25
       },
       "find": {
         "collection": false,
-        "limit": 25
+        "limit": 25,
+        "default": 25
       },
       "search": {
         "collection": "history",
-        "limit": 2
+        "limit": 5,
+        "default": 5
       },
       "knowledge": {
         "collection": "knowledge",
-        "limit": 3,
+        "limit": 5,
+        "default": 5,
         "index": "knowledge_text"
       },
       "memory": {
         "collection": "memory",
-        "limit": 3,
+        "limit": 5,
+        "default": 5,
         "content": false,
         "index": "a_q_text"
       },
       "archive": {
         "collection": "archive",
         "limit": 3,
+        "default": 3,
         "index": "archive_text",
         "exclude": [
           "i apologize",

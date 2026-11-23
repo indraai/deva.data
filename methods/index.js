@@ -64,8 +64,6 @@ export const methods = {
 		return new Promise((resolve, reject) => {
 			if (!packet.q.text) return resolve(this._messages.notext);
 			const {params} = packet.q.meta;
-			if (params[1]) this.vars.search.collection = packet.q.meta.params[1];
-			if (params[2]) this.vars.search.limit = packet.q.meta.params[2];
 	
 			this.func.search(packet.q).then(search => {
 				this.state('resolve', `search:${packet.q.text}`);
@@ -94,7 +92,7 @@ export const methods = {
 			const data = {};
 	
 			if (params[1]) this.vars.memory.collection = `memory_${params[1]}`;
-			if (params[2]) this.vars.memory.limit = packet.q.meta.params[2];
+			if (params[2]) this.vars.memory.limit = params[2];
 	
 			this.func.memory(packet.q).then(memory => {
 				data.memory = memory;
