@@ -123,10 +123,12 @@ Talk to Data Deva with `/command` when it is the current agent, or with `#data c
 | `/memory` | Personal | Text-searches the `memory` collection, then asks `#feecting parse`. |
 | `/memory:key` or `/memory:key:limit` | Personal | Same search, but on collection `memory_${key}`. This also sets `this.vars.memory.collection` for later calls. |
 | `/history` | Personal | Returns the latest documents from the `history` collection, newest first, up to `vars.history.limit` (25). It does not use Feecting. |
-| `/search` and `/search:collection` or `/search:collection:limit` | Global | Text-searches `this.vars.database`. The default collection is `history`, and the default limit is 2. Passing a collection or limit also sets `this.vars.search` for later calls. `/search` has no Feecting step. |
+| `/search` and `/search:collection` or `/search:collection:limit` | Global | Text-searches `this.vars.database`. The default collection is `history`, and the default limit is 5. Passing a collection or limit also sets `this.vars.search` for later calls. `/search` has no Feecting step. |
 | `/listidx:collection` or `/listidx collection` | Personal | Lists indexes on that collection. Both the param form and the text form work. |
 
 `/memory` and `/knowledge` need Feecting Deva after a successful database read. Without it they reject; they do not hang. `/know`, `/insert`, `/listidx`, `/search` and `/history` do not use Feecting.
+
+Each search command checks its limit before it reads the database. A limit must be a whole number of 1 or more. A good limit is stored in `this.vars` as a number and used for later calls. A bad limit, such as `abc`, `0`, `-5` or `1.5`, fires action `incorrect`, state `invalid` and intent `bad`, returns an empty array, and resets the limit to that command's `default` in `package.json`. The defaults are 5 for `/search`, `/memory` and `/knowledge`, and 25 for `/history`.
 
 There are no public `/update`, `/list` or `/archive` commands. `func.update` and `func.list` exist and use the global database. They are not exposed as methods yet.
 
@@ -174,7 +176,7 @@ All of these use the one `MongoClient` from `global.mongo.uri`. Each function ca
 
 The `func` and `methods` objects live in their own directories so `index.js` stays the Deva wiring: listeners, utils, lifecycle, and the imports from `./func/index.js` and `./methods/index.js`. Deva Core binds those functions to the Deva `this`.
 
-The `vars` in `package.json` hold the prompt `messages`, the default `search`, `memory`, `knowledge` and `history` collection names and limits, and the command `context` labels. `this.vars.database` is set in `onReady` from `global.mongo.database`.
+The `vars` in `package.json` hold the prompt `messages`, the default `search`, `memory`, `knowledge` and `history` `collection names`, `limits`, and the `default limit` each one resets to., and the command `context` labels. `this.vars.database` is set in `onReady` from `global.mongo.database`.
 
 ## Testing
 
