@@ -177,7 +177,7 @@
         "default": 25
       },
       "search": {
-        "collection": "history",
+        "collection": "search",
         "limit": 5,
         "default": 5
       },
