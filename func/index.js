@@ -73,6 +73,15 @@ export const func = {
 		this.action('func', 'search');
 		let result = false;
 		this.state('search', opts.text);
+
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `search:limit:${limit}`);
+			this.state('invalid', `search:limit:${limit}`);
+			this.intent('bad', `search:limit:${limit}`);
+			return [];
+		}
+
 		const {collection,limit} = this.vars.search;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(this.vars.database);
@@ -88,14 +97,6 @@ export const func = {
 			score: { $meta: "textScore" }
 		};
 		
-		const parsed = parseInt(limit, 10);
-		if (parsed !== Number(limit) || parsed < 1) {
-			this.action('incorrect', `search:limit:${limit}`);
-			this.state('invalid', `search:limit:${limit}`);
-			this.intent('bad', `search:limit:${limit}`);
-			return [];
-		}
-
 		result = await table.find(query).project(projection).limit(parsed).toArray();
 		this.action('return', `search`);
 		this.state('valid', `search`);
@@ -113,6 +114,15 @@ export const func = {
 		let result = false;
 		const {collection,limit} = this.vars.memory;
 		this.state('get', `memory`);
+
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `memory:limit:${limit}`);
+			this.state('invalid', `memory:limit:${limit}`);
+			this.intent('bad', `memory:limit:${limit}`);
+			return [];
+		}
+		
 		const {database} = this.data().personal.mongo;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
@@ -130,14 +140,6 @@ export const func = {
 				created: 1
 			}
 		};
-		
-		const parsed = parseInt(limit, 10);
-		if (parsed !== Number(limit) || parsed < 1) {
-			this.action('incorrect', `memory:limit:${limit}`);
-			this.state('invalid', `memory:limit:${limit}`);
-			this.intent('bad', `memory:limit:${limit}`);
-			return [];
-		}
 		
 		result = await table.find(query, options).limit(parsed).toArray();
 		this.action('return', `memory`);
@@ -157,6 +159,15 @@ export const func = {
 		const {collection,limit,index} = this.vars.knowledge;
 
 		this.state('get', 'knowledge');
+		
+		const parsed = parseInt(limit, 10);
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `knowledge:limit:${limit}`);
+			this.state('invalid', `knowledge:limit:${limit}`);
+			this.intent('bad', `knowledge:limit:${limit}`);
+			return [];
+		}
+		
 		const database = this.vars.database;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
@@ -172,14 +183,6 @@ export const func = {
 				score: { $meta: "textScore" }
 			}
 		};
-		
-		const parsed = parseInt(limit, 10);
-		if (parsed !== Number(limit) || parsed < 1) {
-			this.action('incorrect', `knowledge:limit:${limit}`);
-			this.state('invalid', `knowledge:limit:${limit}`);
-			this.intent('bad', `knowledge:limit::${limit}`);
-			return [];
-		}
 		
 		result = await table.find(query,options).limit(parsed).toArray();
 		this.action('return', `knowledge`);
@@ -203,9 +206,9 @@ export const func = {
 		const db = this.modules.client.db(database);
 		result = await db.collection(opts.collection).listIndexes().toArray();
 		
-		this.action('return', `history`);
-		this.state('valid', `history`);
-		this.intent('good', `history`)
+		this.action('return', `indexes`);
+		this.state('valid', `indexes`);
+		this.intent('good', `indexes`)
 		return result;
 	},
 	
@@ -219,17 +222,18 @@ export const func = {
 		let result = false;
 		const {collection,limit} = this.vars.history;
 		this.state('get', `history`);
+		const parsed = parseInt(limit, 10);
+
+		if (parsed !== Number(limit) || parsed < 1) {
+			this.action('incorrect', `history:limit:${limit}`);
+			this.state('invalid', `history:limit:${limit}`);
+			this.intent('bad', `history:limit:${limit}`);
+			return [];
+		}
+
 		const {database} = this.data().personal.mongo;
 		await this.modules.client.connect();
 		const db = this.modules.client.db(database);
-		
-		const parsed = parseInt(limit, 10);
-		if (parsed !== Number(limit) || parsed < 1) {
-			this.action('incorrect', `history:limit::${limit}`);
-			this.state('invalid', `history:limit::${limit}`);
-			this.intent('bad', `history:limit::${limit}`);
-			return [];
-		}
 
 		result = await db.collection(collection).find({}).sort({created:-1}).limit(parsed).toArray();
 		this.action('return', `history`);

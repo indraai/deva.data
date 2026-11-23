@@ -136,8 +136,7 @@
         "exit": "🟡 EXIT",
         "done": "🟣 DONE",
         "error": "💣 ERROR!",
-        "no_knowledge": "⛔️ No knowledge found.",
-        "invalid_limit": "⛔️ Invalid limit."
+        "no_knowledge": "⛔️ No knowledge found."
       },
       "database": false,
       "uri": false,
