@@ -18,15 +18,22 @@ export const methods = {
 			const {data, meta} = packet.q;
 			const collection = meta.params[1];
 			const database = meta.params[2] || this.vars.database;
+			const ins_str = `${database}:${collection}:${packet.id.uid}`;
+
+			this.action('insert', ins_str);
 			this.func.insert({database, collection,data}).then(ins => {
-				this.action('resolve', `insert:${collection}:${ins.insertedId}`)
+				this.action('resolve', `insert:${ins_str}`);
+				this.state('valid', `insert:${ins_str}`);
+				this.intent('good', `insert:${ins_str}`);
 				return resolve({
 					text: `id:${ins.insertedId}`,
 					html: `id:${ins.insertedId}`,
 					data: ins,
 				});
 			}).catch(err => {
-				this.action('reject', 'insert');
+				this.action('catch', `insert:${ins_str}`);
+				this.state('invalid', `insert:${ins_str}`);
+				this.intent('bad', `insert:${ins_str}`);
 				return this.err(err, packet, reject);
 			});
 		});
@@ -42,12 +49,18 @@ export const methods = {
 		this.context('history', packet.id.uid);
 		return new Promise((resolve, reject) => {
 			this.func.history().then(history => {
+				this.action('resolve', `history:${packet.id.uid}`);
+				this.state('valid', `history:${packet.id.uid}`);
+				this.intent('good', `history:${packet.id.uid}`);
 				return resolve({
 					text: 'see data',
 					html: 'see data',
 					data: history,
 				})
 			}).catch(err => {
+				this.action('catch', `history:${packet.id.uid}`);
+				this.state('invalid', `history:${packet.id.uid}`);
+				this.intent('bad', `history:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
 		});
@@ -65,14 +78,22 @@ export const methods = {
 			if (!packet.q.text) return resolve(this._messages.notext);
 			const {params} = packet.q.meta;
 	
+			if (params[1]) this.vars.search.collection = params[1];
+			if (params[2]) this.vars.search.limit = params[2];
+
 			this.func.search(packet.q).then(search => {
-				this.state('resolve', `search:${packet.q.text}`);
+				this.action('resolve', `search:${packet.id.uid}`);
+				this.state('valid', `search:${packet.id.uid}`);
+				this.intent('good', `search:${packet.id.uid}`);
 				return resolve({
 					text: 'see data',
 					html: 'see data',
 					data: search,
 				})
 			}).catch(err => {
+				this.action('catch', `search:${packet.id.uid}`);
+				this.state('invalid', `search:${packet.id.uid}`);
+				this.intent('bad', `search:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
 		});
@@ -111,14 +132,18 @@ export const methods = {
 				return this.question(`${this.askChr}feecting parse ${text}`);
 			}).then(feecting => {
 				data.feecting = feecting.a.data;
-				this.state('resolve', `memory`);
+				this.action('resolve', `memory:${packet.id.uid}`);
+				this.state('valid', `memory:${packet.id.uid}`);
+				this.intent('good', `memory:${packet.id.uid}`);
 				return resolve({
 					text: feecting.a.text,
 					html: feecting.a.html,
 					data,
 				})
 			}).catch(err => {
-				this.state('reject', `memory`)
+				this.action('catch', `memory:${packet.id.uid}`);
+				this.state('invalid', `memory:${packet.id.uid}`);
+				this.intent('bad', `memory:${packet.id.uid}`);			
 				return this.err(err, packet, reject);
 			});
 		});
@@ -154,14 +179,18 @@ export const methods = {
 				return this.question(`${this.askChr}feecting parse ${text}`);
 			}).then(feecting => {
 				data.feecting = feecting.a.data;
-				this.state('resolve', `knowledge`);
+				this.action('resolve', `knowledge:${packet.id.uid}`);
+				this.state('valid', `knowledge:${packet.id.uid}`);
+				this.intent('good', `knowledge:${packet.id.uid}`);			
 				return resolve({
 					text: feecting.a.text,
 					html: feecting.a.html,
 					data,
 				})
 			}).catch(err => {
-				this.state('reject', `knowledge`);
+				this.action('catch', `knowledge:${packet.id.uid}`);
+				this.state('invalid', `knowledge:${packet.id.uid}`);
+				this.intent('bad', `knowledge:${packet.id.uid}`);			
 				return this.err(err, packet, reject);
 			});
 		});
@@ -200,14 +229,18 @@ export const methods = {
 			}
 	
 			this.func[func]({id,collection,data, database: this.vars.database}).then(ins => {
-				this.state('resolve', 'add');
+				this.action('resolve', `know:${packet.id.uid}`);
+				this.state('valid', `know:${packet.id.uid}`);
+				this.intent('good', `know:${packet.id.uid}`);
 				return resolve({
 					text: `id: ${ins.insertedId || id}`,
 					html: `id: ${ins.insertedId || id}`,
 					data: ins.insertedId,
 				});
 			}).catch(err => {
-				this.state('reject', 'add');
+				this.action('catch', `know:${packet.id.uid}`);
+				this.state('invalid', `know:${packet.id.uid}`);
+				this.intent('bad', `know:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
 		});
@@ -225,13 +258,18 @@ export const methods = {
 		return new Promise((resolve, reject) => {
 			const collection = packet.q.meta.params[1] || packet.q.text;
 			this.func.indexes({collection}).then(idx => {
-				this.state('resolve', 'indexes');
+				this.action('resolve', `listidx:${packet.id.uid}`);
+				this.state('valid', `listidx:${packet.id.uid}`);
+				this.intent('good', `listidx:${packet.id.uid}`);
 				return resolve({
 					text: 'indexes',
 					html: 'indexes',
 					data: idx
 				})
 			}).catch(err => {
+				this.action('catch', `listidx:${packet.id.uid}`);
+				this.state('invalid', `listidx:${packet.id.uid}`);
+				this.intent('bad', `listidx:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
 		});
