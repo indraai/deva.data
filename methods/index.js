@@ -31,8 +31,8 @@ export const methods = {
 					data: ins,
 				});
 			}).catch(err => {
-				this.action('catch', `insert:${ins_str}`);
-				this.state('invalid', `insert:${ins_str}`);
+				this.action('reject', `insert:${ins_str}`);
+				this.state('catch', `insert:${ins_str}`);
 				this.intent('bad', `insert:${ins_str}`);
 				return this.err(err, packet, reject);
 			});
@@ -58,8 +58,8 @@ export const methods = {
 					data: history,
 				})
 			}).catch(err => {
-				this.action('catch', `history:${packet.id.uid}`);
-				this.state('invalid', `history:${packet.id.uid}`);
+				this.action('reject', `history:${packet.id.uid}`);
+				this.state('catch', `history:${packet.id.uid}`);
 				this.intent('bad', `history:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
@@ -91,8 +91,8 @@ export const methods = {
 					data: search,
 				})
 			}).catch(err => {
-				this.action('catch', `search:${packet.id.uid}`);
-				this.state('invalid', `search:${packet.id.uid}`);
+				this.action('reject', `search:${packet.id.uid}`);
+				this.state('catch', `search:${packet.id.uid}`);
 				this.intent('bad', `search:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
@@ -141,8 +141,8 @@ export const methods = {
 					data,
 				})
 			}).catch(err => {
-				this.action('catch', `memory:${packet.id.uid}`);
-				this.state('invalid', `memory:${packet.id.uid}`);
+				this.action('reject', `memory:${packet.id.uid}`);
+				this.state('catch', `memory:${packet.id.uid}`);
 				this.intent('bad', `memory:${packet.id.uid}`);			
 				return this.err(err, packet, reject);
 			});
@@ -188,8 +188,8 @@ export const methods = {
 					data,
 				})
 			}).catch(err => {
-				this.action('catch', `knowledge:${packet.id.uid}`);
-				this.state('invalid', `knowledge:${packet.id.uid}`);
+				this.action('reject', `knowledge:${packet.id.uid}`);
+				this.state('catch', `knowledge:${packet.id.uid}`);
 				this.intent('bad', `knowledge:${packet.id.uid}`);			
 				return this.err(err, packet, reject);
 			});
@@ -238,8 +238,8 @@ export const methods = {
 					data: ins.insertedId,
 				});
 			}).catch(err => {
-				this.action('catch', `know:${packet.id.uid}`);
-				this.state('invalid', `know:${packet.id.uid}`);
+				this.action('reject', `know:${packet.id.uid}`);
+				this.state('catch', `know:${packet.id.uid}`);
 				this.intent('bad', `know:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
@@ -267,8 +267,8 @@ export const methods = {
 					data: idx
 				})
 			}).catch(err => {
-				this.action('catch', `listidx:${packet.id.uid}`);
-				this.state('invalid', `listidx:${packet.id.uid}`);
+				this.action('reject', `listidx:${packet.id.uid}`);
+				this.state('catch', `listidx:${packet.id.uid}`);
 				this.intent('bad', `listidx:${packet.id.uid}`);
 				return this.err(err, packet, reject);
 			});
