@@ -97,9 +97,9 @@ export const func = {
 		}
 
 		result = await table.find(query).project(projection).limit(parsed).toArray();
-		this.action('return', `knowledge`);
-		this.state('valid', `knowledge`);
-		this.intent('good', `knowledge`)
+		this.action('return', `search`);
+		this.state('valid', `search`);
+		this.intent('good', `search`)
 		return result;
 	},
 	
