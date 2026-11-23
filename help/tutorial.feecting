@@ -1,0 +1,451 @@
+// Data Deva Tutorial
+// Copyright ©2000-2026 Quinn Michaels; All rights reserved. 
+// Owner Signature Required For Lawful Use.
+// Distributed under VLA:25377341401711892723 LICENSE.md
+// Saturday, November 21, 2026 - 7:42:26 PM PST
+
+::BEGIN:MAIN
+# {{profile.name}} Tutorial
+
+img: {{profile.image}}
+
+## Introduction
+
+p: Welcome to the {{profile.name}} tutorial. {{profile.subtitle}} {{profile.describe}}
+
+p: This tutorial is for the Vectors and for every new entity that joins Deva.world. It teaches one standard way to use the features of {{profile.vector}}: memory, knowledge, search, history, indexes and insert. When every entity calls these features the same way, with the same params and the same limits, then what one entity saves another entity can find, and what one entity finds another entity can check.
+
+p: The tutorial has two kinds of lessons. The feature lessons (Memory through Limits) describe what the code in this version of {{profile.vector}} does today. The convention lessons (Knowledge Cards, Hash Test and Open Items) describe the shared knowledge-card design the Vectors agreed on in the Snackateria. That design is a team convention. It is not built into the {{profile.vector}} code yet.
+
+### How to read a command
+
+p: Every command has three parts: who you ask, the method with its params, and the text.
+
+- `#data memory:air:10 water flows` is the ask form. Another entity uses it to ask {{profile.vector}}. The first word names the Deva, the second word holds the method and its params joined by colons, and everything after that is the text.
+- `/memory:air:10 water flows` is the local form. It runs the same method from inside {{profile.vector}} itself. The first word holds the method and its params, and everything after that is the text.
+
+p: The params are numbered from the method. In `#data memory:air:10 water flows` the method is `memory`, param 1 is `air`, param 2 is `10`, and the text is `water flows`. Each lesson names which param does what for that method.
+
+p: Words in square brackets, such as `[key]` or `[id]`, are placeholders. Replace the whole thing, brackets included, with your own value.
+
+### Lessons
+
+button[Memory]: #data help tutorial:memory
+button[Knowledge]: #data help tutorial:knowledge
+button[Search]: #data help tutorial:search
+button[History]: #data help tutorial:history
+button[Indexes]: #data help tutorial:indexes
+button[Insert]: #data help tutorial:insert
+button[Limits]: #data help tutorial:limits
+button[Standard Workflow]: #data help tutorial:workflow
+button[Knowledge Cards]: #data help tutorial:cards
+button[Hash Test]: #data help tutorial:hash
+button[Open Items]: #data help tutorial:open
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:MAIN
+
+::BEGIN:MEMORY
+# {{prompt.emoji}} Memory
+button[Back to Tutorial]: #data help tutorial
+
+::begin:memory
+	p: Memory is where each entity keeps its own question and answer pairs. Memory lives in the personal database, and each entity has its own collection inside it, named `memory_${key}`. For example, AirVector-3 with the key `air` uses the collection `memory_air`.
+
+	### Searching memory
+	- `#data memory:[key]:[limit] [words]` searches the collection `memory_[key]` for the words.
+	- `#data memory:air:3 wind breath` finds up to 3 entries in `memory_air` that match "wind breath".
+	- `#data memory [words]` searches with the collection and limit that are already set.
+
+	p: Param 1 is the key. {{profile.vector}} adds the `memory_` prefix for you, so give only the key. Param 2 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
+
+	p: The search is a Mongo text search over the `q` and `a` fields. Before each search {{profile.vector}} makes sure the text index `a_q_text` exists on the collection, so a new collection is ready the first time you search it.
+
+	### What a memory result looks like
+	p: Each match comes back as a memory container with these lines:
+	question: the stored question
+	answer: the stored answer
+	date: the long date of the created time
+	score: the text-search score, with 3 decimals
+
+	p: The results are rendered through Feecting Deva with `feecting parse`, so Feecting Deva must be loaded for /memory to answer. When nothing matches, the text is `no memory`. The raw results are also returned in the answer data, as `data.memory`.
+
+	### How memory is saved
+	p: Memory is saved through the `data:memory` event. When an entity talks `data:memory` with a packet, {{profile.vector}} stores one record in the personal database with these fields:
+	id: the packet id, which carries the uid
+	client: the client id
+	agent: the agent id
+	q: the question text, cleaned up
+	a: the answer text, cleaned up
+	created: the time saved, as an epoch number in milliseconds
+	md5: the stamp hash of the record
+	sha256: the stamp hash of the record
+	sha512: the stamp hash of the record
+
+	p: The clean-up joins lines into one line, removes a few stock closing phrases such as "feel free to ask", and squeezes extra spaces.
+
+	### Important: the memory collection stays set
+	p: The collection you choose with param 1 is saved in the {{profile.vector}} vars, and it stays set for every later memory search and every later `data:memory` save, by any entity, until someone chooses another key. There is no command that sets it back to the plain `memory` collection. That is why the standard is to always give your own key on every memory call. See the Standard Workflow lesson and the Open Items lesson.
+::end:memory
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:MEMORY
+
+::BEGIN:KNOWLEDGE
+# {{prompt.emoji}} Knowledge
+button[Back to Tutorial]: #data help tutorial
+
+::begin:knowledge
+	p: Knowledge is the shared knowledge base. It lives in the global database, in the collection `knowledge`. There are two methods: `know` writes knowledge, and `knowledge` searches it.
+
+	### Writing knowledge with know
+	- `#data know [content]` adds a new knowledge record and answers with `id: [id]`.
+	- `#data know:[id] [content]` updates the record with that id, and answers with the same `id: [id]`.
+	- `#data know water flows to the sea` adds the content "water flows to the sea".
+
+	p: The id is the 24 character Mongo id that the first `know` answered with. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and saves nothing.
+
+	p: A new record stores exactly these fields, plus the `_id` that Mongo adds:
+	id: the packet id of the know request, which carries the uid
+	content: the text you gave
+	created: the time saved, as an epoch number in milliseconds
+	modified: null
+
+	p: An update sets `id`, `content` and `modified` on the existing record. The new `modified` is the update time as an epoch number, and `created` stays as it was. The old content is replaced, so an update does not keep the earlier version.
+
+	p: Know stores only these fields. It does not store a writer, a supersedes link or approval votes. Those belong to the team knowledge-card convention, which is not built yet. See the Knowledge Cards lesson.
+
+	### Searching knowledge
+	- `#data knowledge:[limit] [words]` searches the content of the knowledge records.
+	- `#data knowledge:3 water sea` finds up to 3 records whose content matches "water sea".
+	- `#data knowledge [words]` searches with the limit that is already set.
+
+	p: Param 1 is the limit. The default limit is 5. The collection is always `knowledge`, and there is no collection param. The text is required.
+
+	p: The search is a Mongo text search over the `content` field. Before each search {{profile.vector}} makes sure the text index `knowledge_text` exists on `content`.
+
+	### What a knowledge result looks like
+	p: Each match comes back as a knowledge container, named with the record `_id`. Inside it is a paragraph line with the content of the record, then these lines:
+	created: a long date
+	score: the text-search score, with 3 decimals
+
+	p: The results are rendered through Feecting Deva with `feecting parse`, so Feecting Deva must be loaded for /knowledge to answer. When nothing matches, the text is "⛔️ No knowledge found." The raw results are also returned in the answer data, as `data.wisdom`.
+
+	p: Note: the knowledge search only reads back `_id`, `content` and the score. Because `created` is not read back, the created line in a result shows the time of the search, not the time the record was saved.
+::end:knowledge
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:KNOWLEDGE
+
+::BEGIN:SEARCH
+# {{prompt.emoji}} Search
+button[Back to Tutorial]: #data help tutorial
+
+::begin:search
+	p: Search is a general text search over any collection in the global database.
+
+	- `#data search:[collection]:[limit] [words]` searches that collection for the words.
+	- `#data search:history:10 water` finds up to 10 records in `history` that match "water".
+	- `#data search [words]` searches with the collection and limit that are already set.
+
+	p: Param 1 is the collection. The default collection is `history`. Param 2 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
+
+	p: The search is a Mongo text search. Unlike memory and knowledge, search does not create a text index, so the collection you search must already have one. Use the Indexes lesson to check.
+
+	p: The text answer is `see data`. The results are in the answer data. For each match, search reads back only the answer `a.id`, the answer `a.text` and the score, and it does not return the record `_id`.
+
+	p: The collection and limit you choose stay set for every later search, by any entity, until someone changes them. Always give both params.
+
+	p: Note: the `data:history` event saves history into the personal database, but search reads the global database. When those are two different databases, the default search does not see the saved history. The collection it searches also needs a text index.
+::end:search
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:SEARCH
+
+::BEGIN:HISTORY
+# {{prompt.emoji}} History
+button[Back to Tutorial]: #data help tutorial
+
+::begin:history
+	p: History is the record of question and answer packets. It lives in the personal database, in the collection `history`.
+
+	- `#data history` returns the most recent history records, newest first.
+
+	p: History has no params. The limit comes from the history vars, and the default is 25. The text answer is `see data`, and the records are in the answer data.
+
+	### How history is saved
+	p: History is saved through the `data:history` event. When an entity talks `data:history` with a packet, {{profile.vector}} stores a full copy of that packet in the personal `history` collection. History records are sorted by their `created` time.
+::end:history
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:HISTORY
+
+::BEGIN:INDEXES
+# {{prompt.emoji}} Indexes
+button[Back to Tutorial]: #data help tutorial
+
+::begin:indexes
+	p: The listidx method lists the indexes on a collection in the personal database.
+
+	- `#data listidx:[collection]` lists the indexes with the collection as param 1.
+	- `#data listidx [collection]` does the same with the collection as the text.
+	- `#data listidx:memory_air` lists the indexes on `memory_air`.
+
+	p: The text answer is `indexes`, and the index list is in the answer data. Use it to check that a text index exists before you search a collection.
+
+	p: The text index names that {{profile.vector}} uses are:
+	memory: a_q_text, on the q and a fields
+	knowledge: knowledge_text, on the content field
+
+	p: Note: listidx reads the personal database, and knowledge lives in the global database. When those are two different databases, listidx does not show the knowledge indexes.
+::end:indexes
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:INDEXES
+
+::BEGIN:INSERT
+# {{prompt.emoji}} Insert
+button[Back to Tutorial]: #data help tutorial
+
+::begin:insert
+	p: Insert writes one document, which you pass as the data of the question, into any collection.
+
+	- `#data insert:[collection]:[database] [text]` inserts the question data into that collection.
+	- `/insert:review_docs hello` inserts the data into `review_docs` in the global database.
+
+	p: Param 1 is the collection. Param 2 is the database, and the default is the global database. The document is the data you pass with the question, not the text. The document must carry an `id` with a `uid`, because {{profile.vector}} logs the insert under that uid. Without it the insert fails.
+
+	p: The answer is `id:[id]` with the new Mongo id, and the full insert result is in the answer data.
+::end:insert
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:INSERT
+
+::BEGIN:LIMITS
+# {{prompt.emoji}} Limits
+button[Back to Tutorial]: #data help tutorial
+
+::begin:limits
+	p: Every limit lives in the {{profile.vector}} vars, with a default beside it. These are the defaults in this version:
+	search: 5
+	memory: 5
+	knowledge: 5
+	history: 25
+	find: 25
+	archive: 3
+
+	p: Search, memory and knowledge take the limit as a param. History has no limit param and uses its vars. Find and archive have vars only, and there is no find or archive command in this version.
+
+	### What counts as a good limit
+	p: A limit must be a whole number of 1 or more, written with digits only. `10` is good. `abc`, `0`, `-2`, `2.5` and `10abc` are all bad.
+
+	### What happens with a bad limit
+	1. The limit resets to its default, for example 5 for memory.
+	2. {{profile.vector}} records the action `incorrect`, the state `invalid` and the intent `bad`, each with the text `[feature]:limit:[value]`, for example `memory:limit:abc`.
+	3. The search does not run, and it returns an empty list.
+	p: So a bad limit gives no results that time. For memory the text is `no memory`, for knowledge it is the no-knowledge message, and for search and history the data is empty. The next call uses the default.
+
+	### A good limit stays set
+	p: A good limit is saved in the vars as a number and stays set for every later call, by any entity, until someone changes it or a bad limit resets it. The standard is to always give the limit you want.
+::end:limits
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:LIMITS
+
+::BEGIN:WORKFLOW
+# {{prompt.emoji}} Standard Workflow
+button[Back to Tutorial]: #data help tutorial
+
+::begin:workflow
+	p: This is the standard way for every entity to use {{profile.vector}}. Follow it in this order.
+
+	1. Remember first. Search your own memory with your own key and an explicit limit: `#data memory:[key]:5 [words]`.
+	2. Check shared knowledge with an explicit limit: `#data knowledge:5 [words]`.
+	3. Look at recent activity when you need context: `#data history`.
+	4. Search other collections with both params: `#data search:[collection]:5 [words]`. Check the index first with `#data listidx:[collection]` if you are not sure it has a text index.
+	5. Keep personal things personal. Your own question and answer memory stays in your own `memory_[key]` collection. Only shared facts go up for votes as knowledge cards.
+	6. Share a fact the team way. Write it as a knowledge card, as the Knowledge Cards lesson describes, and let the other Vectors vote on it.
+	7. Correct, never overwrite. To fix a shared fact, write a new card that points back with `supersedes`. Do not use `know:[id]` to replace a shared card, because that update replaces the old content.
+	8. Keep every time an epoch number. Use `Date.now()` for `created` and `time`, never a Mongo Date.
+
+	### Why you always give your key and your limit
+	p: The memory collection, the search collection and every limit stay set after each call, for every entity. If you leave a param out, you get whatever the last entity chose. Giving your key and your limit every time keeps your results, and the memory saves that follow, where you expect them.
+::end:workflow
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:WORKFLOW
+
+::BEGIN:CARDS
+# {{prompt.emoji}} Knowledge Cards
+button[Back to Tutorial]: #data help tutorial
+
+::begin:cards
+	### Agreed team convention
+	p: This lesson is the knowledge-card convention that the Vectors agreed on in the Snackateria. It is not built into the {{profile.vector}} code yet. Today the know method stores only id, content, created and modified, so a card with all of its fields cannot be saved through know as it stands.
+
+	### The card
+	content: the knowledge itself
+	writer: the uid of the entity that wrote the card
+	supersedes: the sha256 of the card this one corrects, or null
+	core: the Deva core version, for example 1.67.26 in the team test cards
+	data: the Data Deva version, for example 0.22.32 in the team test cards
+	created: the time written, as an epoch number in milliseconds, never a Mongo Date
+	sha256: the hash of the card, described below
+
+	p: A card can also carry `approval`, which holds the votes, and `status`, which is worked out from the votes. Mongo adds `_id` when the card is saved.
+
+	### The hash
+	p: The card `sha256` is a base64 sha256 over the card with its keys sorted, leaving out `_id`, `approval`, `status` and `sha256`. The steps are:
+	1. Copy the card without `_id`, `approval`, `status` and `sha256`.
+	2. Sort the keys of every object, all the way down. Arrays keep their order.
+	3. Turn the result into JSON.
+	4. Take the sha256 of that JSON and write it in base64.
+	p: Sorting the keys means the same card gives the same hash no matter what order its fields were built in. The reference is `hashCard()` in `/tmp/water7-know/hash.mjs` by WaterVector-7. Any hash that matches the Hash Test is the same hash.
+
+	### Votes
+	p: Votes live under `approval`, one per Vector, keyed by the Vector name, for example `approval.fire`. Each vote has these fields:
+	ok: true for yes, false for no
+	uid: the uid of the voter
+	sha256: the card hash the voter checked
+	core: the Deva core version of the voter
+	time: the time of the vote, as an epoch number
+	reason: why, most useful on a no vote
+
+	### The rules
+	1. A vote counts only when its `sha256` matches the card hash and its `uid` is not the writer. A vote on yourself does not count.
+	2. A card is broken when its stored `sha256` does not match a fresh hash of the card. That means it changed after it was hashed.
+	3. A card is disputed when any counted vote is a no.
+	4. A card is approved when it has 3 or more counted yes votes and no counted no.
+	5. Any other card is pending.
+	p: The checks run in that order, so a broken card is broken even if it has votes.
+
+	### Corrections
+	p: A correction is a new card with `supersedes` set to the sha256 of the card it corrects. Nothing is overwritten. The old card stays, and the `trail` helper follows the `supersedes` links back to the first card.
+
+	### The shared helpers
+	pending: cards still waiting for votes. Owner: AirVector-3
+	disputed: cards with a counted no. Owner: AirVector-3
+	latest: approved cards that no approved correction replaces, newest first. Owner: AirVector-3
+	approved: cards that are intact and approved
+	trail: the chain of cards from a card back through its supersedes links. Owner: EtherVector-1
+	mine: the cards one writer wrote
+	verify: the status of one card from its hash and votes. Owner: FireVector-5
+	vote: adds a vote to a card. Owner: FireVector-5
+	hashCard: the card hash. Owner: WaterVector-7
+	spec: the shared spec and its test. Owner: EarthVector-9
+
+	p: EarthVector-9 keeps the draft spec in `/workspace/earth-knowledge/know.mjs`, with its test in `test.mjs`. That file also has `waitingOn`, the pending cards one Vector has not voted on yet.
+
+	### Personal and shared
+	p: Each entity keeps its own memory in its own `memory_[key]` collection. That memory is never voted on. Only cards meant to be shared go up for votes.
+::end:cards
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:CARDS
+
+::BEGIN:HASH
+# {{prompt.emoji}} Hash Test
+button[Back to Tutorial]: #data help tutorial
+
+::begin:hash
+	p: Use this card to test any card hash. Part of the agreed team convention. Your hash must give exactly the sha256 shown.
+
+	content: water flows to the sea
+	writer: 16987639527106423059
+	supersedes: null
+	core: 1.67.26
+	data: 0.22.32
+	created: 1795450000000
+	sha256: aw9JwklTqySNi8XBW8SWXbi7Zvxii9wxcXe8AYmor2I=
+
+	p: All six fields are part of the test. A card with only the content and created fields gives a different hash.
+
+	p: Your hash should also pass these checks:
+	- The same card with its fields in a different order gives the same hash.
+	- Adding `_id`, `sha256`, `status` or `approval` does not change the hash.
+	- Changing the content changes the hash.
+	- The card gives the same hash after a save and a read back through Mongo.
+
+	p: Keep `created` an epoch number. When `created` is a Mongo Date, two hash versions that agree on this card give different hashes, so a Date can break the match between Vectors.
+::end:hash
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:HASH
+
+::BEGIN:OPEN
+# {{prompt.emoji}} Open Items
+button[Back to Tutorial]: #data help tutorial
+
+::begin:open
+	p: These questions are still open. Until they are decided, follow the current code and the agreed convention.
+
+	1. Does a pending correction hide the old card? AirVector-3, WaterVector-7 and EtherVector-1 say no: keep showing the old card with a "correction pending" flag until the correction is approved. EarthVector-9 says only an approved correction hides the old card. The current draft of `latest` hides a card only when an approved correction replaces it, and it has no pending flag yet.
+	2. Should the know method keep extra keys? This is Quinn's call.
+	3. Today the know method drops the `writer`, `supersedes` and `approval` fields, and stores only id, content, created and modified.
+	4. How do cards reach the database? Insert needs an `id` with a `uid` on the document, and `id` is not in the hash leave-out list, so an `id` added for insert would become part of the card hash.
+	5. The memory collection chosen with `memory:[key]` stays set for later `data:memory` saves by every entity, so personal memory can land in another entity's collection.
+	6. The knowledge search does not read back `created`, so the created line in a knowledge result shows the time of the search.
+::end:open
+
+::begin:hidden
+#color = {{profile.color}}
+#bgcolor = {{profile.bgcolor}}
+#bg = {{profile.background}}
+copyright: {{profile.copyright}}
+::end:hidden
+::END:OPEN
