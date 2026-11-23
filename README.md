@@ -141,7 +141,7 @@ There are no public `/update`, `/list` or `/archive` commands. `func.update` and
 
 ## Functions
 
-All of these use the one `MongoClient` from `global.mongo.uri`. Each function calls `connect()` at the start and `close()` in a `finally` block. The next call connects again.
+All of these use the one `MongoClient` from `global.mongo.uri`. Each function calls `connect()` at the start. The client stays open for later calls, and `onStop` closes it.
 
 | Func | Database | What it does |
 | --- | --- | --- |
