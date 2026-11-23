@@ -109,7 +109,7 @@ export const methods = {
 					].join('\n');
 				}).join('\n') : 'no memory';
 				
-				this.state('parse', `memory`);
+				this.action('parse', `memory:${packaet.id.uid}`);
 				return this.question(`${this.askChr}feecting parse ${text}`);
 			}).then(feecting => {
 				data.feecting = feecting.a.data;
@@ -152,7 +152,7 @@ export const methods = {
 						`::end:knowledge:${item._id}`,
 					].join('\n');
 				}).join('\n') : this.vars.messages.no_knowledge;
-				this.state('parse', `knowledge`);
+				this.action('parse', `knowledge:${packet.id.uid}`);
 				return this.question(`${this.askChr}feecting parse ${text}`);
 			}).then(feecting => {
 				data.feecting = feecting.a.data;
