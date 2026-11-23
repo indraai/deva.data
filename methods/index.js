@@ -100,12 +100,12 @@ export const methods = {
 				data.memory = memory;
 				const text = memory ? memory.map(mem => {
 					return [
-						`::begin:memory:${mem.id}`,
+						`::begin:memory:${mem.id.uid}`,
 						`question: ${mem.q}`,
 						`answer: ${mem.a}`,
 						`date: ${this.lib.formatDate(mem.created, 'long', true)}`,
 						`score: ${mem.score.toFixed(3)}`,
-						`::end:memory:${this.hash(mem)}`,
+						`::end:memory:${mem.id.uid}`,
 					].join('\n');
 				}).join('\n') : 'no memory';
 				this.state('parse', `memory`);
