@@ -21,10 +21,10 @@ p: The tutorial has two kinds of lessons. The feature lessons (Memory through Li
 
 p: Every command has three parts: who you ask, the method with its params, and the text.
 
-- `#data memory:air:10 water flows` is the ask form. Another entity uses it to ask {{profile.vector}}. The first word names the Deva, the second word holds the method and its params joined by colons, and everything after that is the text.
-- `/memory:air:10 water flows` is the local form. It runs the same method from inside {{profile.vector}} itself. The first word holds the method and its params, and everything after that is the text.
+- `#data memory:10 water flows` is the ask form. Another entity uses it to ask {{profile.vector}}. The first word names the Deva, the second word holds the method and its params joined by colons, and everything after that is the text.
+- `/memory:10 water flows` is the local form. It runs the same method from inside {{profile.vector}} itself. The first word holds the method and its params, and everything after that is the text.
 
-p: The params are numbered from the method. In `#data memory:air:10 water flows` the method is `memory`, param 1 is `air`, param 2 is `10`, and the text is `water flows`. Each lesson names which param does what for that method.
+p: The params are numbered from the method. In `#data memory:10 water flows` the method is `memory`, param 1 is `10`, and the text is `water flows`. Each lesson names which param does what for that method.
 
 p: Words in square brackets, such as `[key]` or `[id]`, are placeholders. Replace the whole thing, brackets included, with your own value.
 
@@ -58,13 +58,13 @@ button[Back to Tutorial]: #data help tutorial
 	p: Memory is where each entity keeps its own question and answer pairs. Memory lives in the personal database, and each entity has its own collection inside it, named `memory_${key}`. For example, AirVector-3 with the key `air` uses the collection `memory_air`.
 
 	### Searching memory
-	- `#data memory:[key]:[limit] [words]` searches the collection `memory_[key]` for the words.
-	- `#data memory:air:3 wind breath` finds up to 3 entries in `memory_air` that match "wind breath".
-	- `#data memory [words]` searches with the collection and limit that are already set.
+	- `#data memory:[limit] [words]` searches your `memory` collection for the words.
+	- `#data memory:3 wind breath` finds up to 3 entries that match "wind breath".
+	- `#data memory [words]` searches with the limit that is already set.
+	
+	p: Param 1 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
 
-	p: Param 1 is the key. {{profile.vector}} adds the `memory_` prefix for you, so give only the key. Param 2 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
-
-	p: The search is a Mongo text search over the `q` and `a` fields. Before each search {{profile.vector}} makes sure the text index `a_q_text` exists on the collection, so a new collection is ready the first time you search it.
+	p: The search is a Mongo text search over the `q` and `a` fields. Before each search {{profile.vector}} makes sure the text index `a_q_text` exists on the `memory` collection, so it is ready the first time you search it.
 
 	### What a memory result looks like
 	p: Each match comes back as a memory container with these lines:
@@ -89,8 +89,8 @@ button[Back to Tutorial]: #data help tutorial
 
 	p: The clean-up joins lines into one line, removes a few stock closing phrases such as "feel free to ask", and squeezes extra spaces.
 
-	### Important: the memory collection stays set
-	p: The collection you choose with param 1 is saved in the {{profile.vector}} vars, and it stays set for every later memory search and every later `data:memory` save, by any entity, until someone chooses another key. There is no command that sets it back to the plain `memory` collection. That is why the standard is to always give your own key on every memory call. See the Standard Workflow lesson and the Open Items lesson.
+	### The memory limit stays set
+	p: A good limit given with param 1 is saved in the {{profile.vector}} vars and used for later memory searches until someone gives another limit. A bad limit resets it to the default of 5. Saves through `data:memory` always go into the `memory` collection. See the Limits lesson.
 ::end:memory
 
 ::begin:hidden
@@ -214,7 +214,7 @@ button[Back to Tutorial]: #data help tutorial
 
 	- `#data listidx:[collection]` lists the indexes with the collection as param 1.
 	- `#data listidx [collection]` does the same with the collection as the text.
-	- `#data listidx:memory_air` lists the indexes on `memory_air`.
+	- `#data listidx:memory` lists the indexes on the `memory` collection.
 
 	p: The text answer is `indexes`, and the index list is in the answer data. Use it to check that a text index exists before you search a collection.
 
@@ -299,17 +299,17 @@ button[Back to Tutorial]: #data help tutorial
 ::begin:workflow
 	p: This is the standard way for every entity to use {{profile.vector}}. Follow it in this order.
 
-	1. Remember first. Search your own memory with your own key and an explicit limit: `#data memory:[key]:5 [words]`.
+	1. Remember first. Search your own memory with an explicit limit: `#data memory:5 [words]`.
 	2. Check shared knowledge with an explicit limit: `#data knowledge:5 [words]`.
 	3. Look at recent activity when you need context: `#data history`.
 	4. Search other collections with both params: `#data search:[collection]:5 [words]`. Check the index first with `#data listidx:[collection]` if you are not sure it has a text index.
-	5. Keep personal things personal. Your own question and answer memory stays in your own `memory_[key]` collection. Only shared facts go up for votes as knowledge cards.
+	5. Keep personal things personal. Your own question and answer memory stays in the `memory` collection of your personal database. Only shared facts go up for votes as knowledge cards.
 	6. Share a fact the team way. Write it as a knowledge card, as the Knowledge Cards lesson describes, and let the other Vectors vote on it.
 	7. Correct, never overwrite. To fix a shared fact, write a new card that points back with `supersedes`. Do not use `know:[id]` to replace a shared card, because that update replaces the old content.
 	8. Keep every time an epoch number. Use `Date.now()` for `created` and `time`, never a Mongo Date.
 
-	### Why you always give your key and your limit
-	p: The memory collection, the search collection and every limit stay set after each call, for every entity. If you leave a param out, you get whatever the last entity chose. Giving your key and your limit every time keeps your results, and the memory saves that follow, where you expect them.
+	### Why you always give your limit
+	p: The search collection and every limit stay set after each call. If you leave a param out, you get whatever was set last. Giving your limit, and your collection for search, every time keeps your results where you expect them.
 ::end:workflow
 
 ::begin:hidden
@@ -438,8 +438,6 @@ button[Back to Tutorial]: #data help tutorial
 	2. Should the know method keep extra keys? This is Quinn's call.
 	3. Today the know method drops the `writer`, `supersedes` and `approval` fields, and stores only id, content, created and modified.
 	4. How do cards reach the database? Insert needs an `id` with a `uid` on the document, and `id` is not in the hash leave-out list, so an `id` added for insert would become part of the card hash.
-	5. The memory collection chosen with `memory:[key]` stays set for later `data:memory` saves by every entity, so personal memory can land in another entity's collection.
-	6. The knowledge search does not read back `created`, so the created line in a knowledge result shows the time of the search.
 ::end:open
 
 ::begin:hidden
