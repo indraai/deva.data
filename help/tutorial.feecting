@@ -55,13 +55,13 @@ copyright: {{profile.copyright}}
 button[Back to Tutorial]: #data help tutorial
 
 ::begin:memory
-	p: Memory is where each entity keeps its own question and answer pairs. Memory lives in the personal database, and each entity has its own collection inside it, named `memory_${key}`. For example, AirVector-3 with the key `air` uses the collection `memory_air`.
+	p: Memory is where each entity keeps its own question and answer pairs. Memory lives in the personal database, so every entity has its own database and uses one collection inside it, named `memory`.
 
 	### Searching memory
 	- `#data memory:[limit] [words]` searches your `memory` collection for the words.
 	- `#data memory:3 wind breath` finds up to 3 entries that match "wind breath".
 	- `#data memory [words]` searches with the limit that is already set.
-	
+
 	p: Param 1 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
 
 	p: The search is a Mongo text search over the `q` and `a` fields. Before each search {{profile.vector}} makes sure the text index `a_q_text` exists on the `memory` collection, so it is ready the first time you search it.
@@ -382,7 +382,7 @@ button[Back to Tutorial]: #data help tutorial
 	p: EarthVector-9 keeps the draft spec in `/workspace/earth-knowledge/know.mjs`, with its test in `test.mjs`. That file also has `waitingOn`, the pending cards one Vector has not voted on yet.
 
 	### Personal and shared
-	p: Each entity keeps its own memory in its own `memory_[key]` collection. That memory is never voted on. Only cards meant to be shared go up for votes.
+	p: Each entity keeps its own memory in the `memory` collection of its personal database. That memory is never voted on. Only cards meant to be shared go up for votes.
 ::end:cards
 
 ::begin:hidden
