@@ -123,7 +123,7 @@ Talk to Data Deva with `/command` when it is the current agent, or with `#data c
 | `/memory` | Personal | Text-searches the `memory` collection, then asks `#feecting parse`. |
 | `/memory:limit` | Personal | Same search on the `memory` collection, using that limit. A good limit is stored in `this.vars.memory.limit` and used for later calls. There is one `memory` collection for everything, because memory lives in each entity's personal database. |
 | `/history` | Personal | Returns the latest documents from the `history` collection, newest first, up to `vars.history.limit` (25). It does not use Feecting. |
-`/search` creates the `a_q_text` text index on `a.text` and `q.text` before it searches. A collection can have only one text index, so searching a collection that already has a different one, such as `knowledge`, fails with Mongo error 85.
+| `/search` and `/search:collection` or `/search:collection:limit` | Global | Text-searches `this.vars.database`. The default collection is `search`, and the default limit is 5. Passing a collection or limit also sets `this.vars.search` for later calls. `/search` creates the `a_q_text` text index on `a.text` and `q.text` before it searches. A collection can have only one text index, so searching a collection that already has a different one, such as `knowledge`, fails with Mongo error 85. `/search` has no Feecting step. |
 | `/listidx:collection` or `/listidx collection` | Personal | Lists indexes on that collection. Both the param form and the text form work. |
 
 `/memory` and `/knowledge` need Feecting Deva after a successful database read. Without it they reject; they do not hang. `/know`, `/insert`, `/listidx`, `/search` and `/history` do not use Feecting.
