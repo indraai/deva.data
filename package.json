@@ -179,7 +179,8 @@
       "search": {
         "collection": "search",
         "limit": 5,
-        "default": 5
+        "default": 5,
+        "index": "a_q_text"
       },
       "knowledge": {
         "collection": "knowledge",

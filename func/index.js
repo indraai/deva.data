@@ -95,7 +95,9 @@ export const func = {
 		await this.modules.client.connect();
 		const db = this.modules.client.db(this.vars.database);
 		const table = db.collection(collection);
-
+		
+		await table.createIndex({"a.text": "text", "q.text": "text"}, {name: this.vars.search.index});
+		
 		const query  = {$text:{$search:opts.text}};
 		const projection  = {
 			_id: 0,

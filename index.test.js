@@ -250,7 +250,6 @@ test('func.search finds a document in the global search collection and returns t
     created,
   });
   try {
-    await mongo.db(GLOBAL_DB).collection(collection).createIndex({'a.text': 'text', 'q.text': 'text'}, {name: 'a_text_q_text'});
     const hits = await DATA.func.search({text});
     assert.ok(Array.isArray(hits) && hits.length >= 1, 'func.search finds the global search write');
     assert.equal(hits[0].a.text, text, 'the hit has the inserted a.text');
