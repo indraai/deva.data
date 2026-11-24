@@ -160,7 +160,7 @@ button[Back to Tutorial]: #data help tutorial
 	p: Search is a general text search over any collection in the global database.
 
 	- `#data search:[collection]:[limit] [words]` searches that collection for the words.
-	- `#data search:history:10 water` finds up to 10 records in `history` that match "water".
+	- `#data search:search:10 water` finds up to 10 records in the global `search` collection that match "water".
 	- `#data search [words]` searches with the collection and limit that are already set.
 
 	p: Param 1 is the collection. The default collection is `search`. Param 2 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
@@ -171,7 +171,7 @@ button[Back to Tutorial]: #data help tutorial
 
 	p: The collection and limit you choose stay set for every later search, by any entity, until someone changes them. Always give both params.
 
-	p: Note: the `data:history` event saves history into the personal database, but search reads the global database. When those are two different databases, the default search does not see the saved history. The collection it searches also needs a text index.
+	p: Note: search reads the global database, and history lives in the personal database, so search does not see history. Use `#data history` for recent activity.
 ::end:search
 
 ::begin:hidden
