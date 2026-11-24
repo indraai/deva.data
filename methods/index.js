@@ -103,8 +103,8 @@ export const methods = {
 			const {params} = packet.q.meta;
 			const data = {};
 	
-			if (params[1]) this.vars.memory.collection = `memory_${params[1]}`;
-			if (params[2]) this.vars.memory.limit = params[2];
+			this.state('set', `memory:limit:${packet.id.uid}`); // set state to set
+			if (params[1]) this.vars.memory.limit = params[1];
 	
 			this.func.memory(packet.q).then(memory => {
 				data.memory = memory;

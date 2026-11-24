@@ -239,6 +239,27 @@ test('/know inserts and /know:id updates a knowledge document in the global data
 	);
 });
 
+test('func.search finds a document in the global search collection and returns the stored created time', {skip: MONGO_SKIP}, async () => {
+  const collection = DATA.vars.search.collection;
+  const created = Date.now();
+  const text = 'zephyrquartz searchprobe';
+  const {insertedId} = await mongo.db(GLOBAL_DB).collection(collection).insertOne({
+    id: {uid: 'search-test-1'},
+    q: {id: 'sq', text},
+    a: {id: 'sa', text},
+    created,
+  });
+  try {
+    await mongo.db(GLOBAL_DB).collection(collection).createIndex({'a.text': 'text', 'q.text': 'text'}, {name: 'a_text_q_text'});
+    const hits = await DATA.func.search({text});
+    assert.ok(Array.isArray(hits) && hits.length >= 1, 'func.search finds the global search write');
+    assert.equal(hits[0].a.text, text, 'the hit has the inserted a.text');
+    assert.equal(hits[0].created, created, 'created is the stored time');
+  } finally {
+    await mongo.db(GLOBAL_DB).collection(collection).deleteOne({_id: insertedId});
+  }
+});
+
 test('/insert with a data payload writes to the global database, and /insert without a payload rejects', {skip: MONGO_SKIP}, async () => {
 	const payload = {id: {uid: 'insert-test-1'}, content: 'hello insert payload', created: Date.now()};
 	const ans = await question(DATA, '/insert:review_docs hello', payload);
