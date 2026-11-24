@@ -165,7 +165,7 @@ button[Back to Tutorial]: #data help tutorial
 
 	p: Param 1 is the collection. The default collection is `history`. Param 2 is the limit. The default limit is 5. The text is required. With no text, {{profile.vector}} answers with the standard no-text message and does not search.
 
-	p: The search is a Mongo text search. Unlike memory and knowledge, search does not create a text index, so the collection you search must already have one. Use the Indexes lesson to check.
+	p: The search is a Mongo text search over `a.text` and `q.text`. Before each search {{profile.vector}} makes sure the text index `a_q_text` exists on the collection. A collection can have only one text index, so a collection that already has a different one, such as `knowledge`, cannot be searched this way.
 
 	p: The text answer is `see data`. The results are in the answer data. For each match, search reads back only the answer `a.id`, the answer `a.text` and the score, and it does not return the record `_id`.
 
