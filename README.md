@@ -121,9 +121,9 @@ Talk to Data Deva with `/command` when it is the current agent, or with `#data c
 | `/know:id` | Global | Updates that knowledge document. `id` is the MongoDB `_id`. |
 | `/knowledge` and `/knowledge:limit` | Global | Text-searches `knowledge`, then asks `#feecting parse` to format the hits. |
 | `/memory` | Personal | Text-searches the `memory` collection, then asks `#feecting parse`. |
-| `/memory:key` or `/memory:key:limit` | Personal | Same search, but on collection `memory_${key}`. This also sets `this.vars.memory.collection` for later calls. |
+| `/memory:limit` | Personal | Same search on the `memory` collection, using that limit. A good limit is stored in `this.vars.memory.limit` and used for later calls. There is one `memory` collection for everything, because memory lives in each entity's personal database. |
 | `/history` | Personal | Returns the latest documents from the `history` collection, newest first, up to `vars.history.limit` (25). It does not use Feecting. |
-| `/search` and `/search:collection` or `/search:collection:limit` | Global | Text-searches `this.vars.database`. The default collection is `history`, and the default limit is 5. Passing a collection or limit also sets `this.vars.search` for later calls. `/search` has no Feecting step. |
+| `/search` and `/search:collection` or `/search:collection:limit` | Global | Text-searches `this.vars.database`. The default collection is `search`, and the default limit is 5. Passing a collection or limit also sets `this.vars.search` for later calls. `/search` does not create a text index, so the collection needs one first. `/search` has no Feecting step. |
 | `/listidx:collection` or `/listidx collection` | Personal | Lists indexes on that collection. Both the param form and the text form work. |
 
 `/memory` and `/knowledge` need Feecting Deva after a successful database read. Without it they reject; they do not hang. `/know`, `/insert`, `/listidx`, `/search` and `/history` do not use Feecting.
@@ -132,7 +132,7 @@ Each search command checks its limit before it reads the database. A limit must 
 
 There are no public `/update`, `/list` or `/archive` commands. `func.update` and `func.list` exist and use the global database. They are not exposed as methods yet.
 
-`/search` uses the global database, and its default collection is `history`. The history listener and `/history` use the personal database and the same collection name. A default `/search` therefore looks at a different database than `/history`.
+`/search` uses the global database, and its default collection is `search`. The history listener and `/history` use the personal `history` collection, so `/search` does not read history.
 
 ## Listeners
 
